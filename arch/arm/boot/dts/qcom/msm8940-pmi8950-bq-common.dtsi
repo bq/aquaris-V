@@ -30,7 +30,7 @@
 	qcom,float-voltage-mv = <4400>;
 	qcom,chg-led-sw-controls;
 	qcom,chg-led-support;
-        //qcom,thermal-mitigation = <2600 2300 1800 1400 900 700>;
+        //qcom,thermal-mitigation = <2600 2300 1800 1400 900 700 0>;
 	qcom,fastchg-current-ma = <2300>;
 	qcom,charging-timeout-mins = <768>;
 	qcom,fastchg-current-comp = <1200>;
@@ -88,4 +88,5 @@
 
 &usb_otg {
 	qcom,usbin-vadc = <&pmi8950_vadc>;
+	qcom,hsusb-otg-phy-init-seq = <0x39 0x81 0x37 0x82 0xffffffff>;
 };

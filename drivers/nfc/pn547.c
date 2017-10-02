@@ -43,7 +43,7 @@
 
 
 #define MAX_BUFFER_SIZE	512
-
+#define WAKEUP_SRC_TIMEOUT		(2000)
 //#define PN547_DEBUG
 
 struct pn547_dev	{
@@ -55,6 +55,7 @@ struct pn547_dev	{
 	unsigned int 		firm_gpio;
 	unsigned int 		pwr_en;
 	bool			irq_enabled;
+	bool			irq_wake_up;
 	spinlock_t		irq_enabled_lock;
 	unsigned int		irq_gpio;
 	unsigned int 	irq_wakeup_state;
@@ -209,7 +210,8 @@ static irqreturn_t pn547_dev_irq_handler(int irq, void *dev_id)
 	if (!gpio_get_value(pn547_dev->irq_gpio)) {
 		return IRQ_HANDLED;
 	}
-
+	if (device_may_wakeup(&pn547_dev->client->dev))
+		pm_wakeup_event(&pn547_dev->client->dev, WAKEUP_SRC_TIMEOUT);
 	pn547_disable_irq(pn547_dev);
 
 	/* Wake up waiting readers */
@@ -533,6 +535,10 @@ static int pn547_probe(struct i2c_client *client,
 			goto err_request_irq_failed;
 		}
 #endif
+	device_init_wakeup(&client->dev, true);
+	device_set_wakeup_capable(&client->dev, true);
+	i2c_set_clientdata(client, pn547_dev);
+	pn547_dev->irq_wake_up = false;
 
 	return 0;
 
@@ -572,15 +578,40 @@ static int pn547_remove(struct i2c_client *client)
 	gpio_free(pn547_dev->ven_gpio);
 	gpio_free(pn547_dev->firm_gpio);
 	kfree(pn547_dev);
-
 	return 0;
 }
 
+static int pn547_suspend(struct device *device)
+{
+	struct i2c_client *client = to_i2c_client(device);
+	struct pn547_dev *pn547_dev = i2c_get_clientdata(client);
+
+	if (device_may_wakeup(&client->dev) && pn547_dev->irq_enabled) {
+		if (!enable_irq_wake(client->irq))
+			pn547_dev->irq_wake_up = true;
+	}
+	return 0;
+}
+
+static int pn547_resume(struct device *device)
+{
+	struct i2c_client *client = to_i2c_client(device);
+	struct pn547_dev *pn547_dev = i2c_get_clientdata(client);
+
+	if (device_may_wakeup(&client->dev) && pn547_dev->irq_wake_up) {
+		if (!disable_irq_wake(client->irq))
+			pn547_dev->irq_wake_up = false;
+	}
+	return 0;
+}
 static const struct i2c_device_id pn547_id[] = {
 	{ PN547_NAME, 0 },
 	{ }
 };
 
+static const struct dev_pm_ops nfc_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(pn547_suspend, pn547_resume)
+};
 static struct i2c_driver pn547_driver = {
 	.id_table	= pn547_id,
 	.probe		= pn547_probe,
@@ -589,6 +620,7 @@ static struct i2c_driver pn547_driver = {
 		.owner	= THIS_MODULE,
 		.name	= PN547_NAME,
 		.of_match_table = msm_match_table,
+		.pm = &nfc_pm_ops,
 	},
 };
 

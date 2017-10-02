@@ -24,5 +24,5 @@
 };
 
 &pmi8950_charger {
-	qcom,thermal-mitigation = <2600 2300 1800 1200 900 600>;
+	qcom,thermal-mitigation = <2600 2300 1800 1200 900 600 0>;
 };
