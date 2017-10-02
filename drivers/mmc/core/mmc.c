@@ -20,7 +20,7 @@
 #include <linux/mmc/mmc.h>
 #include <linux/reboot.h>
 #include <trace/events/mmc.h>
-
+#include <linux/string.h>
 #include "core.h"
 #include "bus.h"
 #include "mmc_ops.h"
@@ -66,6 +66,14 @@ static int mmc_decode_cid(struct mmc_card *card)
 {
 	u32 *resp = card->raw_cid;
 
+        char emmc0_id[] = "QX13MB";
+	char emmc1_id[] = "Q3J96R";
+	char emmc2_id[] = "HAG4a2";
+	char emmc0_name[] = "samsung KMQX10013M-B419 32+2";
+	char emmc1_name[] = "Micron MT29TZZZ5D6EKFRL-107W.96R 16+2";
+	char emmc2_name[] = "Hynix H9TQ17ABJTBCUR-KUM 16+2";
+	char emmc_unknow[] = "K4P8G304EQ-AGC2";
+
 	/*
 	 * The selection of the format here is based upon published
 	 * specs from sandisk and from what people have reported.
@@ -86,6 +94,24 @@ static int mmc_decode_cid(struct mmc_card *card)
 		card->cid.serial	= UNSTUFF_BITS(resp, 16, 24);
 		card->cid.month		= UNSTUFF_BITS(resp, 12, 4);
 		card->cid.year		= UNSTUFF_BITS(resp, 8, 4) + 1997;
+
+	if(strcmp(card->cid.prod_name,emmc0_id)==0)
+		{
+			strcpy(card->cid.prod_version,emmc0_name);
+		}
+	else if(strcmp(card->cid.prod_name,emmc1_id)==0)
+		{
+			strcpy(card->cid.prod_version,emmc1_name);
+		}
+	else if(strcmp(card->cid.prod_name,emmc2_id)==0)
+		{
+			strcpy(card->cid.prod_version,emmc2_name);
+		}
+	else
+		{
+			strcpy(card->cid.prod_version,emmc_unknow);
+		}
+
 		break;
 
 	case 2: /* MMC v2.0 - v2.2 */
@@ -103,6 +129,25 @@ static int mmc_decode_cid(struct mmc_card *card)
 		card->cid.serial	= UNSTUFF_BITS(resp, 16, 32);
 		card->cid.month		= UNSTUFF_BITS(resp, 12, 4);
 		card->cid.year		= UNSTUFF_BITS(resp, 8, 4) + 1997;
+
+        if(strcmp(card->cid.prod_name,emmc0_id)==0)
+		{
+			strcpy(card->cid.prod_version,emmc0_name);
+		}
+	else if(strcmp(card->cid.prod_name,emmc1_id)==0)
+		{
+			strcpy(card->cid.prod_version,emmc1_name);
+		}
+	else if(strcmp(card->cid.prod_name,emmc2_id)==0)
+		{
+			strcpy(card->cid.prod_version,emmc2_name);
+		}
+	else
+		{
+			strcpy(card->cid.prod_version,emmc_unknow);
+		}
+	
+
 		break;
 
 	default:
@@ -812,6 +857,7 @@ MMC_DEV_ATTR(raw_rpmb_size_mult, "%#x\n", card->ext_csd.raw_rpmb_size_mult);
 MMC_DEV_ATTR(enhanced_rpmb_supported, "%#x\n",
 		card->ext_csd.enhanced_rpmb_supported);
 MMC_DEV_ATTR(rel_sectors, "%#x\n", card->ext_csd.rel_sectors);
+MMC_DEV_ATTR(version, "%s\n", card->cid.prod_version);	
 
 static struct attribute *mmc_std_attrs[] = {
 	&dev_attr_cid.attr,
@@ -831,6 +877,7 @@ static struct attribute *mmc_std_attrs[] = {
 	&dev_attr_raw_rpmb_size_mult.attr,
 	&dev_attr_enhanced_rpmb_supported.attr,
 	&dev_attr_rel_sectors.attr,
+        &dev_attr_version.attr,	
 	NULL,
 };
 ATTRIBUTE_GROUPS(mmc_std);

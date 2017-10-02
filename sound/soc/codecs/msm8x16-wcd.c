@@ -4109,21 +4109,12 @@ void wcd_imped_config(struct snd_soc_codec *codec,
 		case CAJON:
 		case CAJON_2_0:
 		case DIANGU:
-			if (value >= 13) {
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_RX_EAR_CTL,
-					0x20, 0x20);
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_NCP_VCTRL,
-					0x07, 0x07);
-			} else {
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_RX_EAR_CTL,
-					0x20, 0x00);
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_NCP_VCTRL,
-					0x07, 0x04);
-			}
+			snd_soc_update_bits(codec,
+				MSM8X16_WCD_A_ANALOG_RX_EAR_CTL,
+				0x20, 0x00);
+			snd_soc_update_bits(codec,
+				MSM8X16_WCD_A_ANALOG_NCP_VCTRL,
+				0x07, 0x04);
 			break;
 		}
 	} else {
@@ -4144,12 +4135,15 @@ static int msm8x16_wcd_hphl_dac_event(struct snd_soc_dapm_widget *w,
 	uint32_t impedl, impedr;
 	struct snd_soc_codec *codec = w->codec;
 	struct msm8x16_wcd_priv *msm8x16_wcd = snd_soc_codec_get_drvdata(codec);
+	struct msm8916_asoc_mach_data *pdata = NULL;
+	u8 pa_gain = 0;
 	int ret;
 
 	dev_dbg(codec->dev, "%s %s %d\n", __func__, w->name, event);
 	ret = wcd_mbhc_get_impedance(&msm8x16_wcd->mbhc,
 			&impedl, &impedr);
 
+	pdata = snd_soc_card_get_drvdata(codec->component.card);
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		if (get_codec_version(msm8x16_wcd) > CAJON)
@@ -4188,6 +4182,11 @@ static int msm8x16_wcd_hphl_dac_event(struct snd_soc_dapm_widget *w,
 		else
 			dev_dbg(codec->dev, "Failed to get mbhc impedance %d\n",
 				ret);
+				
+		if(pdata->lb_mode)
+		{
+			snd_soc_update_bits(codec, MSM8X16_WCD_A_ANALOG_RX_EAR_CTL, 0x20, 0x00);
+		}
 		break;
 	case SND_SOC_DAPM_POST_PMU:
 		snd_soc_update_bits(codec,
@@ -4209,6 +4208,8 @@ static int msm8x16_wcd_hphl_dac_event(struct snd_soc_dapm_widget *w,
 		}
 		break;
 	}
+	pa_gain = snd_soc_read(codec,MSM8X16_WCD_A_ANALOG_RX_EAR_CTL);
+	dev_info(w->codec->dev, "%s %d %s 0x%x\n",  __func__, event, w->name, pa_gain);
 	return 0;
 }
 

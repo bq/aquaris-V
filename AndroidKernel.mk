@@ -49,6 +49,11 @@ endif
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+
+ifeq ($(findstring RC,$(MANIFEST_FILE)),)
+     KERNEL_CFLAGS += ENABLE_DLOAD_MODE=y
+endif
+
 ifeq ($(TARGET_KERNEL_VERSION),)
     TARGET_KERNEL_VERSION := 3.18
 endif
