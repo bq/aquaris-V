@@ -26,3 +26,11 @@
 &pmi8950_charger {
 	qcom,thermal-mitigation = <2600 2300 1800 1400 900 700 0>;
 };
+/ {
+	qrd_batterydata: qcom,battery-data {
+		qcom,batt-id-range-pct = <15>;
+		#include "batterydata-qrd-jiade-4v4-3000mah.dtsi"
+		#include "batterydata-qrd-veken-4v4-3000mah.dtsi"
+		//#include "batterydata-qrd-sku2-4v35-2590mah.dtsi"
+	};
+};

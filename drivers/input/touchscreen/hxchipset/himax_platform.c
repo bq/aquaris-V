@@ -297,7 +297,7 @@ void himax_int_enable(int irqnum, int enable)
 		disable_irq_nosync(irqnum);
 		irq_enable_count--;
 	}
-	I("irq_enable_count = %d", irq_enable_count);
+	//I("irq_enable_count = %d\n", irq_enable_count);
 }
 
 void himax_rst_gpio_set(int pinnum, uint8_t value)

@@ -21,6 +21,8 @@
 #define TS_WAKE_LOCK_TIMEOUT		(2 * HZ)
 #define FRAME_COUNT 5
 
+extern bool is_pm_suspend_enter(void);
+
 #ifdef HX_RST_PIN_FUNC
 extern void himax_ic_reset(uint8_t loadconfig,uint8_t int_off);
 #endif
@@ -1438,6 +1440,28 @@ void himax_ts_work(struct himax_ts_data *ts)
 #ifdef HX_CHIP_STATUS_MONITOR
 		int j=0;
 #endif
+#if defined(HX_SMART_WAKEUP)
+	int k = 0;
+	if (atomic_read(&ts->suspend_mode)){		
+	    wake_lock_timeout(&ts->ts_SMWP_wake_lock, TS_WAKE_LOCK_TIMEOUT);
+		for(k=0; k<10; k++)
+		{
+			if (is_pm_suspend_enter())
+			{
+				I("is_pm_suspend_enter ture wait for 100ms\n");
+				msleep(100);
+			}
+			else
+				break;
+		}
+		if (k == 10)
+		{	
+			I("pm may be stuck, discard this tp even!!\n");
+			return;
+		}
+	}
+#endif
+
 
 #if defined(HX_USB_DETECT_GLOBAL)
 	himax_cable_detect_func(false);

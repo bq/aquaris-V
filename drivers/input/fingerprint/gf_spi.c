@@ -420,7 +420,11 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		pr_debug("%s GF_IOC_ENABLE_IRQ\n", __func__);
 		gf_enable_irq(gf_dev);
 // add for fingerprint check list start
-	 proc_entry = proc_create(PROC_NAME, 0777, NULL, &proc_file_ops);
+	 if (NULL == proc_entry)
+	 {
+		gf_dev->isInitialize = 1;
+		proc_entry = proc_create(PROC_NAME, 0777, NULL, &proc_file_ops);
+	 }
 	 if (NULL == proc_entry)
          {
              printk(" gf3258 Couldn't create proc entry!");
@@ -524,6 +528,8 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		break;
 	case GF_IOC_REQUEST_IRQ:
         {
+			if(gf_dev->isInitialize == 0)
+			{
              int irq_err = -1;
              printk("mingliang.tan  GF_IOC_REQUEST_IRQ\n");
 			 wake_lock_init(&fp_wakelock, WAKE_LOCK_SUSPEND, "fp_wakelock");
@@ -539,6 +545,7 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			pr_err("gf:failed to request IRQ:%d\n", gf_dev->irq);
 			}
 			}
+		}
         break;
 	case GF_IOC_REMOVE:
 		pr_debug("%s GF_IOC_REMOVE\n", __func__);
@@ -747,7 +754,8 @@ static int gf_probe(struct platform_device *pdev)
 	gf_dev->reset_gpio = -EINVAL;
 	gf_dev->pwr_gpio = -EINVAL;
 	gf_dev->device_available = 0;
-	gf_dev->fb_black = 0;
+	gf_dev->fb_black = 0;	
+	gf_dev->isInitialize = 0;
 
 	if (gf_parse_dts(gf_dev))
 		goto error_hw;
@@ -887,6 +895,7 @@ static int gf_remove(struct platform_device *pdev)
 	remove_proc_entry(PROC_NAME,NULL);
 
 	fb_unregister_client(&gf_dev->notifier);
+	gf_dev->isInitialize = 0;
 	mutex_unlock(&device_list_lock);
 
 	return 0;

@@ -15,16 +15,6 @@
 #include "msm8937-pmi8950-qrd-sku1.dtsi"
 #include "msm8940-pinctrl.dtsi"
 
-/ {
-	qrd_batterydata: qcom,battery-data {
-		qcom,batt-id-range-pct = <15>;
-		#include "batterydata-qrd-jiade-4v4-3000mah.dtsi"
-		#include "batterydata-qrd-veken-4v4-3000mah.dtsi"
-		#include "batterydata-qrd-atl-4v4-3400mah.dtsi"
-		//#include "batterydata-qrd-sku2-4v35-2590mah.dtsi"
-	};
-};
-
 &pmi8950_charger {
 	qcom,battery-data = <&qrd_batterydata>;
 	qcom,float-voltage-mv = <4400>;
@@ -89,4 +79,12 @@
 &usb_otg {
 	qcom,usbin-vadc = <&pmi8950_vadc>;
 	qcom,hsusb-otg-phy-init-seq = <0x39 0x81 0x37 0x82 0xffffffff>;
+};
+
+/ {
+	reserved-memory {
+		secure_mem: secure_region@0 {
+			status="disabled";
+		};
+	};
 };

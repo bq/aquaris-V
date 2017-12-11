@@ -561,10 +561,6 @@ static void goodix_ts_work_func(struct work_struct *work)
     u8 doze_buf[3] = {0x81, 0x4B};
 #endif
 
-    u8 position_buf[7]= {0x81,0x4c}; 
-    s32 gesture_input_x = 0;
-    s32 gesture_input_y = 0;
-    
     GTP_DEBUG_FUNC();
     ts = container_of(work, struct goodix_ts_data, work);
     if (ts->enter_update)
@@ -594,10 +590,10 @@ static void goodix_ts_work_func(struct work_struct *work)
                 {
                     GTP_INFO("Wakeup by gesture(^), light up the screen!");
                 }
-                input_report_key(ts->input_dev, KEY_WAKEUP, 1);
-                input_sync(ts->input_dev);
-                input_report_key(ts->input_dev, KEY_WAKEUP, 0);
-                input_sync(ts->input_dev);
+                //input_report_key(ts->input_dev, KEY_WAKEUP, 1);
+                //input_sync(ts->input_dev);
+                //input_report_key(ts->input_dev, KEY_WAKEUP, 0);
+                //input_sync(ts->input_dev);
                 // clear 0x814B
                 doze_buf[2] = 0x00;
                 gtp_i2c_write(i2c_connect_client, doze_buf, 3);
@@ -609,34 +605,21 @@ static void goodix_ts_work_func(struct work_struct *work)
                 u8 type = ((doze_buf[2] & 0x0F) - 0x0A) + (((doze_buf[2] >> 4) & 0x0F) - 0x0A) * 2;
                 
                 GTP_INFO("%s slide to light up the screen!", direction[type]);
-                input_report_key(ts->input_dev, KEY_WAKEUP, 1);
-                input_sync(ts->input_dev);
-                input_report_key(ts->input_dev, KEY_WAKEUP, 0);
-                input_sync(ts->input_dev);
+               // input_report_key(ts->input_dev, KEY_WAKEUP, 1);
+               // input_sync(ts->input_dev);
+               // input_report_key(ts->input_dev, KEY_WAKEUP, 0);
+               // input_sync(ts->input_dev);
                 // clear 0x814B
                 doze_buf[2] = 0x00;
                 gtp_i2c_write(i2c_connect_client, doze_buf, 3);
             }
             else if (0xCC == doze_buf[2])
-            {			                
-				gtp_i2c_read(i2c_connect_client, position_buf, 7);
-				gesture_input_x = position_buf[3] | ( position_buf[4] << 8 );
-				gesture_input_y = position_buf[5] | ( position_buf[6] << 8 );
-			    GTP_DEBUG("gesture_input_x = %d,gesture_input_y= %d\n",gesture_input_x,gesture_input_y);
-				if( ( (gesture_input_x == 1 || gesture_input_x == 2 || gesture_input_x == 4) ) && gesture_input_y == 0)
-				{
-                   //NOT report the cap-button
-				}
-				else
-				{
-                    GTP_INFO("Double click to light up the screen!");
-	                input_report_key(ts->input_dev, KEY_WAKEUP, 1);
-	                input_sync(ts->input_dev);
-	                input_report_key(ts->input_dev, KEY_WAKEUP, 0);
-	                input_sync(ts->input_dev);
-				}
-				
-				
+            {
+                GTP_INFO("Double click to light up the screen!");
+                input_report_key(ts->input_dev, KEY_WAKEUP, 1);
+                input_sync(ts->input_dev);
+                input_report_key(ts->input_dev, KEY_WAKEUP, 0);
+                input_sync(ts->input_dev);
                 // clear 0x814B
                 doze_buf[2] = 0x00;
                 gtp_i2c_write(i2c_connect_client, doze_buf, 3);
@@ -1627,11 +1610,11 @@ static ssize_t gt91xx_config_write_proc(struct file *filp, const char __user *bu
 {
     s32 ret = 0;
 
-    GTP_DEBUG("write count %d\n", count);
+    GTP_DEBUG("write count %ld\n", count);
 
     if (count > GTP_CONFIG_MAX_LENGTH)
     {
-        GTP_ERROR("size not match [%d:%d]\n", GTP_CONFIG_MAX_LENGTH, count);
+        GTP_ERROR("size not match [%d:%ld]\n", GTP_CONFIG_MAX_LENGTH, count);
         return -EFAULT;
     }
 
@@ -1744,7 +1727,7 @@ static s8 gtp_request_io_port(struct goodix_ts_data *ts)
         GTP_GPIO_AS_INT(gtp_int_gpio);  
         ts->client->irq = gpio_to_irq(gtp_int_gpio);
     }
-
+	GTP_INFO("ts->client->irq =%d\n",ts->client->irq );
     ret = GTP_GPIO_REQUEST(gtp_rst_gpio, "GTP RST PORT");
     if (ret < 0) 
     {
@@ -2437,7 +2420,6 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
     
     //do NOT remove these logs
     GTP_INFO("GTP Driver Version: %s", GTP_DRIVER_VERSION);
-    GTP_INFO("GTP Driver Built@%s, %s", __TIME__, __DATE__);
     GTP_INFO("GTP I2C Address: 0x%02x", client->addr);
 
     i2c_connect_client = client;
@@ -2520,13 +2502,12 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
 		GTP_ERROR("is not gt9xxx\n");
 		return ret;
     }
-
     ret = gtp_read_version(client, &version_info);
     if (ret < 0)
     {
         GTP_ERROR("Read version failed.");
     }
-    
+
     ret = gtp_init_panel(ts);
     if (ret < 0)
     {

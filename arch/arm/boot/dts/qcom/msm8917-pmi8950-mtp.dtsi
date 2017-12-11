@@ -113,7 +113,7 @@
 				00 00 00 00 00 00 00 00 00 00 
 				00 00 00 00 00 00 00 00 00 00 
 				00 00 00 00 00 00 9E 01]; 
-			};
+		};
 	};
 	
 };
@@ -183,13 +183,14 @@
 	qcom,float-voltage-mv = <4400>;
 	qcom,chg-led-sw-controls;
 	qcom,chg-led-support;
-        qcom,thermal-mitigation = <2600 2300 1800 1400 900 700>;
+        qcom,thermal-mitigation = <2600 2300 1800 1400 900 700 0>;
 	qcom,fastchg-current-ma = <2300>;
 	qcom,charging-timeout-mins = <768>;
 	qcom,fastchg-current-comp = <1200>;
 	/* 11 for 4.2V, 16 for 4.1V */
 	qcom,float-voltage-comp = <16>;
 	qcom,report-temp-by-d-work;
+        qcom,override-usb-current;
 	status = "okay";
 };
 

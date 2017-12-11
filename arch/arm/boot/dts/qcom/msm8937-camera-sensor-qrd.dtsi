@@ -349,8 +349,8 @@
 		qcom,mem1 = <0 0x0 2 0x0 1 0>;
 		//read page 4 value
 		qcom,page2 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll2 = <0 0x0 2 0x0 1 0>;
-		qcom,mem2 = <64 0x0a04 2 0x0 1 0>;
+		qcom,poll2 = <0 0x0 2 0x0 1 5>;
+		qcom,mem2 = <64 0x0a04 2 0x0 1 1>;
 		//init 
 		qcom,page3 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll3 = <0 0x0 2 0x0 1 0>;
@@ -361,8 +361,8 @@
 		qcom,mem4 = <0 0x0 2 0x0 1 0>;
 		//read page 5 value
 		qcom,page5 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll5 = <0 0x0 2 0x0 1 0>;
-		qcom,mem5 = <64 0x0a04 2 0x0 1 0>;
+		qcom,poll5 = <0 0x0 2 0x0 1 5>;
+		qcom,mem5 = <64 0x0a04 2 0x0 1 1>;
 		//init 
 		qcom,page6 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll6 = <0 0x0 2 0x0 1 0>;
@@ -373,8 +373,8 @@
 		qcom,mem7 = <0 0x0 2 0x0 1 0>;
 		//read page 6 value
 		qcom,page8 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll8 = <0 0x0 2 0x0 1 0>;
-		qcom,mem8 = <64 0x0a04 2 0x0 1 0>;
+		qcom,poll8 = <0 0x0 2 0x0 1 5>;
+		qcom,mem8 = <64 0x0a04 2 0x0 1 1>;
 		//init 
 		qcom,page9 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll9 = <0 0x0 2 0x0 1 0>;
@@ -385,8 +385,8 @@
 		qcom,mem10 = <0 0x0 2 0x0 1 0>;
 		//read page 7 value
 		qcom,page11 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll11 = <0 0x0 2 0x0 1 0>;
-		qcom,mem11 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll11 = <0 0x0 2 0x0 1 5>;
+		qcom,mem11 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page12 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll12 = <0 0x0 2 0x0 1 0>;
@@ -397,8 +397,8 @@
 		qcom,mem13 = <0 0x0 2 0x0 1 0>;
 		//read page 8 value
 		qcom,page14 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll14 = <0 0x0 2 0x0 1 0>;
-		qcom,mem14 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll14 = <0 0x0 2 0x0 1 5>;
+		qcom,mem14 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page15 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll15 = <0 0x0 2 0x0 1 0>;
@@ -409,8 +409,8 @@
 		qcom,mem16 = <0 0x0 2 0x0 1 0>;
 		//read page 9 value
 		qcom,page17 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll17 = <0 0x0 2 0x0 1 0>;
-		qcom,mem17 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll17 = <0 0x0 2 0x0 1 5>;
+		qcom,mem17 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page18 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll18 = <0 0x0 2 0x0 1 0>;
@@ -421,8 +421,8 @@
 		qcom,mem19 = <0 0x0 2 0x0 1 0>;
 		//read page 10 value
 		qcom,page20 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll20 = <0 0x0 2 0x0 1 0>;
-		qcom,mem20 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll20 = <0 0x0 2 0x0 1 5>;
+		qcom,mem20 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page21 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll21 = <0 0x0 2 0x0 1 0>;
@@ -433,8 +433,8 @@
 		qcom,mem22 = <0 0x0 2 0x0 1 0>;
 		//read page 11 value
 		qcom,page23 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll23 = <0 0x0 2 0x0 1 0>;
-		qcom,mem23 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll23 = <0 0x0 2 0x0 1 5>;
+		qcom,mem23 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page24 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll24 = <0 0x0 2 0x0 1 0>;
@@ -445,8 +445,8 @@
 		qcom,mem25 = <0 0x0 2 0x0 1 0>;
 		//read page 12 value
 		qcom,page26 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll26 = <0 0x0 2 0x0 1 0>;
-		qcom,mem26 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll26 = <0 0x0 2 0x0 1 5>;
+		qcom,mem26 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page27 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll27 = <0 0x0 2 0x0 1 0>;
@@ -457,8 +457,8 @@
 		qcom,mem28 = <0 0x0 2 0x0 1 0>;
 		//read page 13 value
 		qcom,page29 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll29 = <0 0x0 2 0x0 1 0>;
-		qcom,mem29 = <64 0x0a04 2 0x0 1 0>;		
+		qcom,poll29 = <0 0x0 2 0x0 1 5>;
+		qcom,mem29 = <64 0x0a04 2 0x0 1 1>;		
 		//init 
 		qcom,page30 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll30 = <0 0x0 2 0x0 1 0>;
@@ -469,8 +469,8 @@
 		qcom,mem31 = <0 0x0 2 0x0 1 0>;
 		//read page 14 value
 		qcom,page32 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll32 = <0 0x0 2 0x0 1 0>;
-		qcom,mem32 = <64 0x0a04 2 0x0 1 0>;			
+		qcom,poll32 = <0 0x0 2 0x0 1 5>;
+		qcom,mem32 = <64 0x0a04 2 0x0 1 1>;			
 		//init 
 		qcom,page33 = <1 0x0a00 2 0x04 1 1>;
 		qcom,poll33 = <0 0x0 2 0x0 1 0>;
@@ -481,8 +481,8 @@
 		qcom,mem34= <0 0x0 2 0x0 1 0>;
 		//read page 15 value
 		qcom,page35 = <1 0x0a00 2 0x01 1 0>;
-		qcom,poll35 = <0 0x0 2 0x0 1 0>;
-		qcom,mem35 = <56 0x0a04 2 0x0 1 0>;		
+		qcom,poll35 = <0 0x0 2 0x0 1 5>;
+		qcom,mem35 = <56 0x0a04 2 0x0 1 1>;		
 
 
 		
@@ -916,7 +916,7 @@
 
 		qcom,led-flash-src = <&led_flash1>;
 		//qcom,actuator-src = <&actuator0>;
-		qcom,eeprom-src = <&eeprom2 &eeprom3 &eeprom4 &eeprom6>;
+		qcom,eeprom-src = <&eeprom2 &eeprom3  &eeprom6>;
        		cam_vdig-supply = <&pm8937_l23>; 
 		cam_vio-supply = <&pm8937_l6>;
 		//cam_vaf-supply = <&pm8937_l17>;
