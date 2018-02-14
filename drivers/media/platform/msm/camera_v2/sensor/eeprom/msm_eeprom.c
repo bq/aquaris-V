@@ -1869,17 +1869,23 @@ static camera_vendor_module_id s5k4h8_oflim_get_otp_vendor_module_id(struct msm_
 static camera_vendor_module_id s5k4h8_truly_get_otp_vendor_module_id(struct msm_eeprom_ctrl_t *e_ctrl)
 {	
 	uint8_t MID_FLAG1_OFFSET = 0x00;
-        uint8_t MID_FLAG2_OFFSET = 0x1C;
+    uint8_t MID_FLAG2_OFFSET = 0x1C;
 	uint8_t MODULE_INFO_OFFSET_GROUP1 = 0x01;
 	uint8_t MODULE_INFO_OFFSET_GROUP2 = 0x1D;
+	uint8_t SENSOR_FLAG_GROUP1= 0x08;
+	uint8_t SENSOR_FLAG_GROUP2= 0x24;
 	uint8_t mid=0;
 	uint8_t flag1=0;
-        uint8_t flag2=0;
+    uint8_t flag2=0;
+	uint8_t flag3=0;
+	uint8_t flag4=0;
 	uint8_t *buffer = e_ctrl->cal_data.mapdata;
 	bool rc = false;
 
 	flag1 = buffer[MID_FLAG1_OFFSET];
 	flag2 = buffer[MID_FLAG2_OFFSET];
+	flag3 = buffer[SENSOR_FLAG_GROUP1];
+	flag4 = buffer[SENSOR_FLAG_GROUP2];
 
 	if(flag1 == 0x01){
 		mid = buffer[MODULE_INFO_OFFSET_GROUP1];
@@ -1888,6 +1894,49 @@ static camera_vendor_module_id s5k4h8_truly_get_otp_vendor_module_id(struct msm_
 	}else{
 		mid = MID_NULL;
 	}	
+	
+	if(flag3 == 0x01){
+		mid = MID_NULL;
+	}else if(flag4 == 0x01){
+		mid = MID_NULL;
+	}
+
+	pr_err("%s mid=0x%x, flag1=0x%x, flag2=0x%x\n", __func__, mid, flag1,flag2);
+	rc = (mid==MID_TRULY) ? true : false;
+	if(rc==false) mid = MID_NULL;
+	return mid;
+}
+
+static camera_vendor_module_id s5k4h8_truly_yamcha_get_otp_vendor_module_id(struct msm_eeprom_ctrl_t *e_ctrl)
+{	
+	uint8_t MID_FLAG1_OFFSET = 0x00;
+    uint8_t MID_FLAG2_OFFSET = 0x1C;
+	uint8_t MODULE_INFO_OFFSET_GROUP1 = 0x01;
+	uint8_t MODULE_INFO_OFFSET_GROUP2 = 0x1D;
+	uint8_t SENSOR_FLAG_GROUP1= 0x08;
+	uint8_t SENSOR_FLAG_GROUP2= 0x24;
+	uint8_t mid=0;
+	uint8_t flag1=0;
+    uint8_t flag2=0;
+	uint8_t flag3=0;
+	uint8_t flag4=0;
+	uint8_t *buffer = e_ctrl->cal_data.mapdata;
+	bool rc = false;
+
+	flag1 = buffer[MID_FLAG1_OFFSET];
+	flag2 = buffer[MID_FLAG2_OFFSET];
+	flag3 = buffer[SENSOR_FLAG_GROUP1];
+	flag4 = buffer[SENSOR_FLAG_GROUP2];
+
+	if((flag3 == 0x01) || (flag4 == 0x01)){
+		if(flag1 == 0x01){
+			mid = buffer[MODULE_INFO_OFFSET_GROUP1];
+		}else if(flag2 == 0x01){
+			mid = buffer[MODULE_INFO_OFFSET_GROUP2];
+		}else{
+			mid = MID_NULL;
+		}	
+	}
 	
 	pr_err("%s mid=0x%x, flag1=0x%x, flag2=0x%x\n", __func__, mid, flag1,flag2);
 	rc = (mid==MID_TRULY) ? true : false;
@@ -1972,6 +2021,8 @@ static uint8_t get_otp_vendor_module_id(struct msm_eeprom_ctrl_t *e_ctrl, const 
 		module_id = s5k4h8_jsl_get_otp_vendor_module_id(e_ctrl);
 	}else if(strcmp(eeprom_name,"truly_s5k4h8") == 0){
 		module_id = s5k4h8_truly_get_otp_vendor_module_id(e_ctrl);
+	}else if(strcmp(eeprom_name,"truly_s5k4h8_yamcha") == 0){
+		module_id = s5k4h8_truly_yamcha_get_otp_vendor_module_id(e_ctrl);
 	}else if(strcmp(eeprom_name,"qunhui_s5k5e8") == 0){
 		module_id = s5k5e8_qunhui_get_otp_vendor_module_id(e_ctrl);	
 	}else if(strcmp(eeprom_name,"holitech_s5k5e8") == 0){

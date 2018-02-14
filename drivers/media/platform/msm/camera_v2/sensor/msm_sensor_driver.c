@@ -827,6 +827,7 @@ int32_t msm_sensor_driver_probe(void *setting,
                         || ((strcmp(slave_info->sensor_name,"s5k4h8_OFF0380") == 0) && (s_vendor_eeprom[i].module_id == MID_OFILM))
 			|| ((strcmp(slave_info->sensor_name,"s5k4h8_holitech") == 0) && (s_vendor_eeprom[i].module_id == MID_HOLITECH))
 			|| ((strcmp(slave_info->sensor_name,"s5k4h8_truly") == 0) && (s_vendor_eeprom[i].module_id == MID_TRULY))
+			|| ((strcmp(slave_info->sensor_name,"s5k4h8_truly_yamcha") == 0) && (s_vendor_eeprom[i].module_id == MID_TRULY))
 			|| ((strcmp(slave_info->sensor_name,"s5k5e8") == 0) && (s_vendor_eeprom[i].module_id == MID_HOLITECH))
 			|| ((strcmp(slave_info->sensor_name,"s5k5e8_qunhui") == 0) && (s_vendor_eeprom[i].module_id == MID_QUNHUI))
 			|| ((strcmp(slave_info->sensor_name,"s5k4h8_jsl_yamcha") == 0) && (s_vendor_eeprom[i].module_id == MID_QUNHUI))

@@ -24,6 +24,7 @@
 };
 
 &pmi8950_charger {
+	qcom,fastchg-current-comp = <900>;
 	qcom,thermal-mitigation = <2600 2300 1800 1400 900 700 0>;
 };
 
@@ -33,6 +34,10 @@
                 #include "batterydata-l2600-atl-4v4-3400mah.dtsi"
                 #include "batterydata-l2600-jiade-4v4-3400mah.dtsi"
         };
+};
+
+&pmi8950_fg {
+	qcom,cool-bat-decidegc = <120>;
 };
 
 &soc {

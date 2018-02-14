@@ -436,7 +436,7 @@ enum hvdcp_voters {
 
 #define RUNIN_BATT_CAPACITY_CONTROL
 #ifdef RUNIN_BATT_CAPACITY_CONTROL
-static int BatteryTestStatus_enable;
+static int BatteryTestStatus_enable = 0;
 static void runin_work(struct smbchg_chip *chip, int batt_capacity);
 #endif
 
@@ -6041,6 +6041,7 @@ static int smbchg_battery_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_CAPACITY:
 		val->intval = get_prop_batt_capacity(chip);
 		#ifdef RUNIN_BATT_CAPACITY_CONTROL
+		if (BatteryTestStatus_enable)
 			runin_work(chip, val->intval);
 		#endif
 		break;
