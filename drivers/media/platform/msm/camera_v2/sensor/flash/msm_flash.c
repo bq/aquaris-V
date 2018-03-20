@@ -581,7 +581,7 @@ static int32_t msm_flash_low(
 		if (flash_ctrl->flash_trigger[i])
 			led_trigger_event(flash_ctrl->flash_trigger[i], 0);
 
-#if defined(CONFIG_MSM8940_PRODUCT) || defined(CONFIG_MSM8917_PRODUCT)
+#if defined(CONFIG_MSM8940_PRODUCT) || defined(CONFIG_MSM8937_PRODUCT) || defined(CONFIG_MSM8917_PRODUCT)
 	if (flash_ctrl->switch_trigger)
 		led_trigger_event(flash_ctrl->switch_trigger, 1);
 #endif
@@ -604,7 +604,7 @@ static int32_t msm_flash_low(
 				curr);
 		}
 	}
-#if !defined(CONFIG_MSM8940_PRODUCT) && !defined(CONFIG_MSM8917_PRODUCT)
+#if !defined(CONFIG_MSM8940_PRODUCT) && !defined(CONFIG_MSM8937_PRODUCT) && !defined(CONFIG_MSM8917_PRODUCT)
 	if (flash_ctrl->switch_trigger)
 		led_trigger_event(flash_ctrl->switch_trigger, 1);
 #endif
@@ -628,7 +628,7 @@ static int32_t msm_flash_high(
 		if (flash_ctrl->torch_trigger[i])
 			led_trigger_event(flash_ctrl->torch_trigger[i], 0);
 
-#if defined(CONFIG_MSM8940_PRODUCT) || defined(CONFIG_MSM8917_PRODUCT)
+#if defined(CONFIG_MSM8940_PRODUCT) || defined(CONFIG_MSM8937_PRODUCT) || defined(CONFIG_MSM8917_PRODUCT)
 	if (flash_ctrl->switch_trigger)
 		led_trigger_event(flash_ctrl->switch_trigger, 1);
 #endif
@@ -651,7 +651,7 @@ static int32_t msm_flash_high(
 				curr);
 		}
 	}
-#if !defined(CONFIG_MSM8940_PRODUCT) && !defined(CONFIG_MSM8917_PRODUCT)
+#if !defined(CONFIG_MSM8940_PRODUCT) && !defined(CONFIG_MSM8937_PRODUCT) && !defined(CONFIG_MSM8917_PRODUCT)
 	if (flash_ctrl->switch_trigger)
 		led_trigger_event(flash_ctrl->switch_trigger, 1);
 #endif
@@ -1201,10 +1201,9 @@ static int32_t msm_flash_platform_probe(struct platform_device *pdev)
 #endif
 	flash_ctrl->msm_sd.sd.devnode->fops = &msm_flash_v4l2_subdev_fops;
 
-#if !defined(CONFIG_MSM8940_PRODUCT) || !defined(CONFIG_MSM8917_PRODUCT)
+#if defined(CONFIG_MSM8940_PRODUCT) || defined(CONFIG_MSM8937_PRODUCT) || defined(CONFIG_MSM8917_PRODUCT)
 	if (flash_ctrl->flash_driver_type == FLASH_DRIVER_PMIC && 0 == flash_ctrl->pdev->id)
-#endif
-#if defined(CONFIG_MSM8940_PRODUCT) && defined(CONFIG_MSM8917_PRODUCT)
+#else
 	if (flash_ctrl->flash_driver_type == FLASH_DRIVER_PMIC)
 #endif
 		rc = msm_torch_create_classdev(pdev, flash_ctrl);

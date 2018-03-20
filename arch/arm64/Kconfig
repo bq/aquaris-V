@@ -301,11 +301,39 @@ config ARCH_MSM8940
 	  This enables support for the MSM8940 chipset. If you don't
 	  know what to do here, say N
 
+config PRODUCT_NAPPA_S
+	bool "NAPPA_S Product"
+	default n
+	help
+	  Say Y here if MSM8937
+	  If unsure, say N.
+
 config PRODUCT_RADITZ
 	bool "RADITZ Product"
 	default n
 	help
 	  Say Y here if RADITZ MSM8940
+	  If unsure, say N.
+
+config PRODUCT_RADITZ_S
+	bool "RADITZ_S Product"
+	default n
+	help
+	  Say Y here if RADITZ_S MSM8937
+	  If unsure, say N.
+
+config MSM8940_PRODUCT
+	bool "MSM8940 Product"
+	default n
+	help
+	  Say Y here if MSM8940
+	  If unsure, say N.
+          
+config MSM8937_PRODUCT
+	bool "MSM8937 Product"
+	default n
+	help
+	  Say Y here if MSM8937
 	  If unsure, say N.
 
 config ARCH_MSM8953

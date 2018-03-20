@@ -1044,6 +1044,20 @@ config PRODUCT_NAPPA
 	bool "NAPPA Product"
 	default n
 	help
+	  Say Y here if NAPPA
+	  If unsure, say N.
+          
+config PRODUCT_NAPPA_S
+	bool "NAPPA_S Product"
+	default n
+	help
+	  Say Y here if NAPPA_S
+	  If unsure, say N.
+          
+config MSM8937_PRODUCT
+	bool "MSM8937 Product"
+	default n
+	help
 	  Say Y here if MSM8937
 	  If unsure, say N.
 

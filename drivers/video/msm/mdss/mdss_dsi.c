@@ -313,7 +313,7 @@ static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
         		ctrl_pdata->panel_power_data.num_vreg, 0);          
        }
 #else
-#ifdef CONFIG_PRODUCT_RADITZ
+#if defined(CONFIG_PRODUCT_RADITZ) || defined(CONFIG_PRODUCT_RADITZ_S)
         udelay(1000);
 #endif
 		ret = msm_dss_enable_vreg(
