@@ -61,7 +61,11 @@ static void scm_disable_sdi(void);
 * So the SDI cannot be re-enabled when it already by-passed.
 */
 #ifdef DOWNLOAD_MODE
-    static int download_mode = 1;
+	#ifdef CONFIG_PRODUCT_NAPPA_S
+    		static int download_mode = 0;
+	#else
+    		static int download_mode = 1;
+	#endif
 #else
     static int download_mode = 0;
 #endif
