@@ -1397,9 +1397,10 @@ static void __del_from_free_nid_list(struct f2fs_nm_info *nm_i,
 static int add_free_nid(struct f2fs_sb_info *sbi, nid_t nid, bool build)
 {
 	struct f2fs_nm_info *nm_i = NM_I(sbi);
-	struct free_nid *i;
+	struct free_nid *i, *e;
 	struct nat_entry *ne;
 	bool allocated = false;
+	bool ret = false;
 
 	if (!available_free_memory(sbi, FREE_NIDS))
 		return -1;
@@ -1426,6 +1427,43 @@ static int add_free_nid(struct f2fs_sb_info *sbi, nid_t nid, bool build)
 	i->state = NID_NEW;
 
 	spin_lock(&nm_i->free_nid_list_lock);
+
+	if (build) {
+		/*
+		 *   Thread A             Thread B
+		 *  - f2fs_create
+		 *   - f2fs_new_inode
+		 *    - alloc_nid
+		 *     - __insert_nid_to_list(ALLOC_NID_LIST)
+		 *                     - f2fs_balance_fs_bg
+		 *                      - build_free_nids
+		 *                       - __build_free_nids
+		 *                        - scan_nat_page
+		 *                         - add_free_nid
+		 *                          - __lookup_nat_cache
+		 *  - f2fs_add_link
+		 *   - init_inode_metadata
+		 *    - new_inode_page
+		 *     - new_node_page
+		 *      - set_node_addr
+		 *  - alloc_nid_done
+		 *   - __remove_nid_from_list(ALLOC_NID_LIST)
+		 *                         - __insert_nid_to_list(FREE_NID_LIST)
+		 */
+		ne = __lookup_nat_cache(nm_i, nid);
+		if (ne && (!get_nat_flag(ne, IS_CHECKPOINTED) ||
+				nat_get_blkaddr(ne) != NULL_ADDR))
+			goto err_out;
+
+		e = __lookup_free_nid_list(nm_i, nid);
+		if (e) {
+			if (e->state == NID_NEW)
+				ret = true;
+			goto err_out;
+		}
+	}
+	ret = true;
+
 	if (radix_tree_insert(&nm_i->free_nid_root, i->nid, i)) {
 		spin_unlock(&nm_i->free_nid_list_lock);
 		kmem_cache_free(free_nid_slab, i);
@@ -1433,8 +1471,9 @@ static int add_free_nid(struct f2fs_sb_info *sbi, nid_t nid, bool build)
 	}
 	list_add_tail(&i->list, &nm_i->free_nid_list);
 	nm_i->fcnt++;
+err_out:
 	spin_unlock(&nm_i->free_nid_list_lock);
-	return 1;
+	return ret;
 }
 
 static void remove_free_nid(struct f2fs_nm_info *nm_i, nid_t nid)
