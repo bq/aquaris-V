@@ -265,6 +265,7 @@ static int construct_get_dest_keyring(struct key **_dest_keyring)
 		key_get(dest_keyring);
 	} else {
 		bool do_perm_check = true;
+
 		/* use a default keyring; falling through the cases until we
 		 * find one that we actually have */
 		switch (cred->jit_keyring) {
@@ -461,14 +462,17 @@ static struct key *construct_key_and_link(struct keyring_search_context *ctx,
 
 	kenter("");
 
+	if (ctx->index_key.type == &key_type_keyring)
+		return ERR_PTR(-EPERM);
+
 	ret = construct_get_dest_keyring(&dest_keyring);
 	if (ret)
-	  goto error;
+		goto error;
 
 	user = key_user_lookup(current_fsuid());
 	if (!user) {
-	  ret = -ENOMEM;
-	  goto error_put_dest_keyring;
+		ret = -ENOMEM;
+		goto error_put_dest_keyring;
 	}
 
 	ret = construct_alloc_key(ctx, dest_keyring, flags, user, &key);
