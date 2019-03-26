@@ -37,32 +37,143 @@
 };
 
 &int_codec {
-	status = "okay";
+		status = "ok";
+	/delete-property/ qcom,cdc-us-euro-gpios;
+	compatible = "qcom,msm8952-audio-codec";
+	qcom,model = "msm8952-snd-card-mtp";
+	//qcom,model = "msm8953-snd-card-mtp";
+	
+	reg =   <0xc051000 0x4>,
+		<0xc051004 0x4>,
+		<0xc055000 0x4>,
+		<0xc052000 0x4>,
+		<0xc054000 0x4>;
+	reg-names = "csr_gp_io_mux_mic_ctl",
+		"csr_gp_io_mux_spkr_ctl",
+		"csr_gp_io_lpaif_pri_pcm_pri_mode_muxsel",
+		"csr_gp_io_mux_quin_ctl",
+		"csr_gp_io_mux_mic_ext_clk_ctl";
+
+	qcom,msm-hs-micbias-type = "external";//  internal
 	qcom,msm-mbhc-hphl-swh = <1>;
-	qcom,msm-gpios =
-		"pri_i2s";
-	qcom,pinctrl-names =
-		"all_off",
-		"pri_i2s_act";
-	pinctrl-names =
-		"all_off",
-		"pri_i2s_act";
-	pinctrl-0 = <&cdc_pdm_lines_sus &cdc_pdm_lines_2_sus>;
-	pinctrl-1 = <&cdc_pdm_lines_act &cdc_pdm_lines_2_act>;
-	qcom,cdc-us-euro-gpios;
-	qcom,msm-hs-micbias-type = "internal";
+	qcom,msm-mbhc-gnd-swh = <0>;   //0
+
+//	qcom,msm-micbias1-ext-cap;
+//	qcom,msm-micbias2-ext-cap;
+
 	qcom,audio-routing =
 		"RX_BIAS", "MCLK",
 		"SPK_RX_BIAS", "MCLK",
 		"INT_LDO_H", "MCLK",
 		"MIC BIAS External", "Handset Mic",
-		"MIC BIAS Internal2", "Headset Mic",
+		"MIC BIAS External2", "Headset Mic",
+	//	"AMIC1", "MIC BIAS External",
+	//	"AMIC2", "MIC BIAS Internal2";
+
 		"MIC BIAS External", "Secondary Mic",
-		"AMIC1", "MIC BIAS External",
-		"AMIC2", "MIC BIAS Internal2",
-		"AMIC3", "MIC BIAS External";
+
+			"AMIC1", "MIC BIAS External",
+ 			"AMIC2", "MIC BIAS External2",
+ 			"AMIC3", "MIC BIAS External";   
+
+
+	qcom,msm-ext-pa = "quinary","quaternary";
+	qcom,msm-mclk-freq = <9600000>;
+	qcom,msm-gpios =    "pri_i2s",
+			"quin_i2s";
+	qcom,pinctrl-names = 
+		"all_off", 
+		"pri_i2s_act",
+		"quin_act",
+		"quin_pri_i2s_act";
+	pinctrl-names = 
+		"all_off", 
+		"pri_i2s_act",
+		"quin_act",
+		"quin_pri_i2s_act";
+
+qcom,hdmi-dba-codec-rx;
+
+
+		asoc-platform = <&pcm0>, <&pcm1>, <&pcm2>, <&voip>, <&voice>,
+		<&loopback>, <&compress>, <&hostless>,
+		<&afe>, <&lsm>, <&routing>, <&lpa>;
+	asoc-platform-names = "msm-pcm-dsp.0", "msm-pcm-dsp.1",
+		"msm-pcm-dsp.2", "msm-voip-dsp",
+		"msm-pcm-voice", "msm-pcm-loopback",
+		"msm-compress-dsp", "msm-pcm-hostless",
+		"msm-pcm-afe", "msm-lsm-client",
+		"msm-pcm-routing", "msm-pcm-lpa";
+	asoc-cpu = <&dai_pri_auxpcm>,
+	<&dai_mi2s0>, <&dai_mi2s1>,
+	<&dai_mi2s2>, <&dai_mi2s3>,
+	<&dai_mi2s5>, <&dai_mi2s6>,
+	<&sb_0_rx>, <&sb_0_tx>, <&sb_1_rx>, <&sb_1_tx>,
+	<&sb_3_rx>, <&sb_3_tx>, <&sb_4_rx>, <&sb_4_tx>,
+	<&bt_sco_rx>, <&bt_sco_tx>,
+	<&int_fm_rx>, <&int_fm_tx>,
+	<&afe_pcm_rx>, <&afe_pcm_tx>,
+	<&afe_proxy_rx>, <&afe_proxy_tx>,
+	<&incall_record_rx>, <&incall_record_tx>,
+	<&incall_music_rx>, <&incall_music_2_rx>;
+	asoc-cpu-names = "msm-dai-q6-auxpcm.1",
+		"msm-dai-q6-mi2s.0", "msm-dai-q6-mi2s.1",
+		"msm-dai-q6-mi2s.2", "msm-dai-q6-mi2s.3",
+		"msm-dai-q6-mi2s.5", "msm-dai-q6-mi2s.6",
+		"msm-dai-q6-dev.16384", "msm-dai-q6-dev.16385",
+		"msm-dai-q6-dev.16386", "msm-dai-q6-dev.16387",
+		"msm-dai-q6-dev.16390", "msm-dai-q6-dev.16391",
+		"msm-dai-q6-dev.16392", "msm-dai-q6-dev.16393",
+		"msm-dai-q6-dev.12288", "msm-dai-q6-dev.12289",
+		"msm-dai-q6-dev.12292", "msm-dai-q6-dev.12293",
+		"msm-dai-q6-dev.224", "msm-dai-q6-dev.225",
+		"msm-dai-q6-dev.241", "msm-dai-q6-dev.240",
+		"msm-dai-q6-dev.32771", "msm-dai-q6-dev.32772",
+		"msm-dai-q6-dev.32773", "msm-dai-q6-dev.32770";
 };
 
+&tlmm
+{
+	nxp_reset_active: nxp_reset_active {
+		mux {
+			pins = "gpio97";
+			function =  "gpio";
+		};
+		config {
+			pins = "gpio97";
+			num-grp-pins = <1>;
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+	};
+
+	nxp_reset_sleep: nxp_reset_sleep {
+			mux {
+				pins = "gpio97";
+				function =  "gpio";
+			};
+			config {
+				pins = "gpio97";
+				num-grp-pins = <1>;
+				drive-strength = <2>;
+				bias-disable;
+			};
+	};
+};
+
+&i2c_2 {
+	tfa98xx@34 {
+		compatible = "nxp,tfa98xx";
+		reg = <0x34>;
+		nxp,tfa_max-vol-steps=<0x01>;
+		nxp,reset-gpio = <&tlmm 96 0>;
+		nxp,irq-gpio = <&tlmm 97 0x2008>;
+		pinctrl-names = "nxp_reset_active","nxp_reset_suspend";
+		pinctrl-0 = <&nxp_reset_active>;
+		pinctrl-1 = <&nxp_reset_sleep>;
+		status = "okay";
+		};
+};
 
 &pm8937_cajon_dig {
 	status = "okay";
@@ -127,7 +238,7 @@
 		1 &intc 0 221 0
 		2 &tlmm 67 0>;
 	interrupt-names = "hc_irq", "pwr_irq", "status_irq";
-	cd-gpios = <&tlmm 67 0x1>;
+	cd-gpios = <&tlmm 67 0x0>;
 
 	qcom,clk-rates = <400000 20000000 25000000 50000000 100000000
 								200000000>;
@@ -136,8 +247,20 @@
 	status = "ok";
 };
 
+&i2c_2 {
+	//Parallel-charger configuration
+	smb1351-charger@1d {
+		compatible = "qcom,smb1351-charger";
+		reg = <0x1d>;
+		qcom,parallel-en-pin-polarity = <1>;
+		qcom,parallel-charger;
+		qcom,float-voltage-mv = <4400>;
+		qcom,recharge-mv = <100>;
+	};
+};
+
 &i2c_5 { /* BLSP2 QUP1 */
-	nq@28 {
+/*	nq@28 {
 		compatible = "qcom,nq-nci";
 		reg = <0x28>;
 		qcom,nq-irq = <&tlmm 17 0x00>;
@@ -153,14 +276,32 @@
 		pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
 		clocks = <&clock_gcc clk_bb_clk2_pin>;
 		clock-names = "ref_clk";
-	};
+	};*/
+        nxp@28 {
+                compatible = "nxp,pn547";
+                reg = <0x28>;
+                qcom,nxp-irq = <&tlmm 17 0x00>;
+                qcom,nxp-ven = <&tlmm 16 0x00>;
+                qcom,nxp-dw-req = <&tlmm 130 0x00>;
+                qcom,nxp-clkreq = <&pm8937_gpios 5 0x00>;
+                interrupt-parent = <&tlmm>;
+                qcom,clk-src = "BBCLK2";
+                interrupts = <17 0>;
+                interrupt-names = "nxp-irq";
+                pinctrl-names = "nfc_active", "nfc_suspend";
+                pinctrl-0 = <&nfc_int_active &nfc_disable_active>;
+                pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
+                clocks = <&clock_gcc clk_bb_clk2_pin>;
+                clock-names = "ref_clk";
+        };
+
 };
 
 &pm8937_gpios {
 	gpio@c400 {
 		qcom,mode = <0>;
 		qcom,output-type = <0>;
-		qcom,pull = <0>;
+		qcom,pull = <4>;
 		qcom,vin-sel = <2>;
 		qcom,out-strength = <3>;
 		qcom,src-sel = <0>;
@@ -168,7 +309,8 @@
 		status = "okay";
 	};
 };
-
+/*
 &pm8937_vadc {
 	/delete-node/ chan@11;
 };
+*/

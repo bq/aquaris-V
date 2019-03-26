@@ -188,6 +188,7 @@ void msm_vfe47_config_irq(struct vfe_device *vfe_dev,
 				vfe_dev->vfe_base + 0x5C);
 	msm_camera_io_w_mb(vfe_dev->irq1_mask,
 				vfe_dev->vfe_base + 0x60);
+
 }
 
 static int32_t msm_vfe47_init_dt_parms(struct vfe_device *vfe_dev,
@@ -772,6 +773,7 @@ long msm_vfe47_reset_hardware(struct vfe_device *vfe_dev,
 			pr_err("%s:%d failed: reset timeout\n", __func__,
 				__LINE__);
 			vfe_dev->reset_pending = 0;
+
 		}
 	}
 
@@ -1795,7 +1797,7 @@ void msm_vfe47_cfg_axi_ub(struct vfe_device *vfe_dev,
 {
 	struct msm_vfe_axi_shared_data *axi_data = &vfe_dev->axi_data;
 
-	axi_data->wm_ub_cfg_policy = UB_CFG_POLICY;
+	axi_data->wm_ub_cfg_policy = MSM_WM_UB_EQUAL_SLICING;
 	if (axi_data->wm_ub_cfg_policy == MSM_WM_UB_EQUAL_SLICING)
 		msm_vfe47_cfg_axi_ub_equal_slicing(vfe_dev);
 	else

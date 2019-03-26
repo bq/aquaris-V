@@ -798,10 +798,6 @@ static void msm_isp_check_for_output_error(struct vfe_device *vfe_dev,
 
 		if (stream_info->state == RESUMING &&
 			!stream_info->controllable_output) {
-			ISP_DBG("%s: axi_updating_mask stream_id %x frame_id %d\n",
-				__func__, stream_idx, vfe_dev->axi_data.
-				src_info[SRC_TO_INTF(stream_info->stream_src)]
-				.frame_id);
 			sof_info->axi_updating_mask |=
 				1 << stream_idx;
 		}
@@ -1100,7 +1096,7 @@ void msm_isp_notify(struct vfe_device *vfe_dev, uint32_t event_type,
 			spin_unlock_irqrestore(&vfe_dev->common_data->
 				common_dev_data_lock, flags);
 		} else {
-			if (frame_src <= VFE_RAW_2) {
+			if (frame_src == VFE_PIX_0) {
 				msm_isp_check_for_output_error(vfe_dev, ts,
 					&event_data.u.sof_info, frame_src);
 			}
@@ -1919,8 +1915,8 @@ static int msm_isp_cfg_ping_pong_address(struct vfe_device *vfe_dev,
 			stream_info->stream_src <= RDI_INTF_2)) {
 		dual_vfe_res = NULL;
 	} else {
-		pr_err("%s: Error! Should not reach this case is_split %d stream_src %d\n",
-			__func__, vfe_dev->is_split, stream_info->stream_src);
+ 		pr_err("%s: Error! Should not reach this case is_split %d stream_src %d\n",
+ 			__func__, vfe_dev->is_split, stream_info->stream_src);
 		msm_isp_halt_send_error(vfe_dev, ISP_EVENT_BUF_FATAL_ERROR);
 		return 0;
 	}
@@ -2628,9 +2624,10 @@ int msm_isp_axi_restart(struct vfe_device *vfe_dev,
 
 	rc = vfe_dev->hw_info->vfe_ops.axi_ops.restart(vfe_dev, 0,
 		restart_cmd->enable_camif);
-	if (rc < 0)
+	if (rc < 0) {
 		pr_err("%s Error restarting vfe %d HW\n",
-			__func__, vfe_dev->pdev->id);
+ 			__func__, vfe_dev->pdev->id);
+	}
 
 	return rc;
 }
@@ -3363,6 +3360,7 @@ static int msm_isp_request_frame(struct vfe_device *vfe_dev,
 			vfe_dev->common_data->dual_vfe_res;
 	uint32_t vfe_id = 0;
 	bool dual_vfe = false;
+	uint32_t pingpong_bit = 0;
 
 	if (!vfe_dev || !stream_info) {
 		pr_err("%s %d failed: vfe_dev %pK stream_info %pK\n", __func__,
@@ -3433,6 +3431,25 @@ static int msm_isp_request_frame(struct vfe_device *vfe_dev,
 	}
 
 	spin_lock_irqsave(&stream_info->lock, flags);
+
+    if (stream_info->undelivered_request_cnt == 1) {
+        pingpong_status =
+        vfe_dev->hw_info->vfe_ops.axi_ops.get_pingpong_status(
+            vfe_dev);
+        pingpong_bit = ((pingpong_status >>
+            stream_info->wm[0]) & 0x1);
+        if (stream_info->sw_ping_pong_bit == !pingpong_bit) {
+            ISP_DBG("%s:Return Empty Buffer stream id 0x%X\n",
+                __func__, stream_info->stream_id);
+            rc = msm_isp_return_empty_buffer(vfe_dev, stream_info,
+                user_stream_id, frame_id, buf_index,
+                frame_src);
+            spin_unlock_irqrestore(&stream_info->lock,
+                flags);
+            return 0;
+        }
+    }
+
 	queue_req = &stream_info->request_queue_cmd[stream_info->request_q_idx];
 	if (queue_req->cmd_used) {
 		spin_unlock_irqrestore(&stream_info->lock, flags);
@@ -3471,8 +3488,8 @@ static int msm_isp_request_frame(struct vfe_device *vfe_dev,
 		if (rc) {
 			spin_unlock_irqrestore(&stream_info->lock, flags);
 			stream_info->undelivered_request_cnt--;
-			pr_err_ratelimited("%s:%d fail to cfg HAL buffer\n",
-				__func__, __LINE__);
+            pr_err_ratelimited("%s:%d fail to cfg HAL buffer, undelivered_request_cnt %d\n",
+			         __func__, __LINE__,stream_info->undelivered_request_cnt);
 			return rc;
 		}
 
@@ -3517,15 +3534,15 @@ static int msm_isp_request_frame(struct vfe_device *vfe_dev,
 			stream_info->undelivered_request_cnt--;
 			spin_unlock_irqrestore(&stream_info->lock,
 						flags);
-			pr_err_ratelimited("%s:%d fail to cfg HAL buffer\n",
-				__func__, __LINE__);
+            pr_err_ratelimited("%s:%d fail to cfg HAL buffer, undelivered_request_cnt %d\n",
+    				__func__, __LINE__,stream_info->undelivered_request_cnt);
 			return rc;
 		}
 	} else {
 		spin_unlock_irqrestore(&stream_info->lock, flags);
 		stream_info->undelivered_request_cnt--;
-		pr_err_ratelimited("%s: Invalid undeliver frame count %d\n",
-			__func__, stream_info->undelivered_request_cnt);
+        pr_err_ratelimited("%s: Invalid undeliver frame count %d\n",
+     			__func__, stream_info->undelivered_request_cnt);
 		return -EINVAL;
 	}
 
@@ -3950,12 +3967,11 @@ void msm_isp_process_axi_irq_stream(struct vfe_device *vfe_dev,
 	if (done_buf)
 		buf_index = done_buf->buf_idx;
 
-	ISP_DBG("%s: vfe %d: stream 0x%x, frame id %d, pingpong bit %d\n",
-		__func__,
+	ISP_DBG("vfe %d: stream 0x%x, frame id %d, pingpong bit %d, buf_index %d\n",
 		vfe_dev->pdev->id,
 		stream_info->stream_id,
 		frame_id,
-		pingpong_bit);
+		pingpong_bit, buf_index);
 
 	rc = vfe_dev->buf_mgr->ops->update_put_buf_cnt(vfe_dev->buf_mgr,
 		vfe_dev->pdev->id,
@@ -4033,8 +4049,8 @@ void msm_isp_process_axi_irq_stream(struct vfe_device *vfe_dev,
 					pingpong_bit);
 	if (rc) {
 		spin_unlock_irqrestore(&stream_info->lock, flags);
-		pr_err_ratelimited("%s:VFE%d get done buf fail\n",
-			__func__, vfe_dev->pdev->id);
+ 		pr_err_ratelimited("%s:VFE%d get done buf fail\n",
+ 			__func__, vfe_dev->pdev->id);
 		msm_isp_halt_send_error(vfe_dev,
 			ISP_EVENT_PING_PONG_MISMATCH);
 		return;

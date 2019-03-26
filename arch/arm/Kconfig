@@ -1013,6 +1013,55 @@ source "arch/arm/mach-w90x900/Kconfig"
 
 source "arch/arm/mach-zynq/Kconfig"
 
+config MSM8917_PRODUCT
+	bool "MSM8917 Product"
+	default n
+	help
+	  Say Y here if MSM8917
+	  If unsure, say N.
+
+config MSM8940_PRODUCT
+	bool "MSM8940 Product"
+	default n
+	help
+	  Say Y here if MSM8940
+	  If unsure, say N.
+
+config PRODUCT_YAMCHALITE
+	bool "YAMCHALITE Product"
+	default n
+	help
+	  Say Y here if MSM8917
+	  If unsure, say N.
+
+config PRODUCT_YAMCHA
+	bool "YAMCHA Product"
+	default n
+	help
+	  Say Y here if MSM8937
+	  If unsure, say N.
+
+config PRODUCT_NAPPA
+	bool "NAPPA Product"
+	default n
+	help
+	  Say Y here if NAPPA
+	  If unsure, say N.
+          
+config PRODUCT_NAPPA_S
+	bool "NAPPA_S Product"
+	default n
+	help
+	  Say Y here if NAPPA_S
+	  If unsure, say N.
+          
+config MSM8937_PRODUCT
+	bool "MSM8937 Product"
+	default n
+	help
+	  Say Y here if MSM8937
+	  If unsure, say N.
+
 # Definitions to make life easier
 config ARCH_ACORN
 	bool

@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) 2016, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "msm8937-pmi8950-bq-common.dtsi"
+
+/ {
+	model = "Qualcomm Technologies, Inc. MSM8937-PMI8950 QRD SKU1";
+	compatible = "qcom,msm8937-pmi8950-qrd-sku1",
+		   "qcom,msm8937-qrd", "qcom,msm8937", "qcom,qrd";
+	qcom,board-id= <0x2000b 0>;
+};
+
+&pmi8950_charger {
+	qcom,thermal-mitigation = <2600 2300 1800 1400 900 700 0>;
+};
+
+/ {
+        qrd_batterydata: qcom,battery-data {
+                qcom,batt-id-range-pct = <15>;
+                #include "batterydata-l2600-atl-4v4-3400mah.dtsi"
+                #include "batterydata-l2600-jiade-4v4-3400mah.dtsi"
+        };
+};
+
+&pmi8950_fg {
+	qcom,cool-bat-decidegc = <120>;
+};
+
+&soc {
+	i2c@78b7000 {
+		himax-ts@48 {
+			himax,panel-coords   	= <0 1080 0 1920>;
+			himax,display-coords 	= <0 1080 0 1920>;
+		};
+
+		goodix_ts@5d {
+			goodix,cfg-group0 = [
+				47 38 04 80 07 0A 
+				0D 41 11 8F 2D 06 
+				50 37 03 03 01 01 
+				60 62 01 00 08 18 
+				1B 1D 14 87 27 DD 
+				3F 41 D3 07 0F 0A 
+				00 82 33 11 00 00 
+				00 00 00 00 00 08 
+				0A 00 41 32 6E 94 
+				90 02 08 00 40 04 
+				91 36 00 80 3F 00 
+				70 4A 00 64 57 00 
+				64 65 00 5B 20 40 
+				60 00 F2 50 40 FF 
+				FF 17 00 92 03 00 
+				00 00 00 00 FF FF 
+				03 33 00 28 80 00 
+				00 00 00 14 46 00 
+				00 00 00 32 00 01 
+				02 03 04 05 06 07 
+				08 09 0A 0B 0C 19 
+				18 17 16 15 14 13 
+				12 11 10 0F 0E 0D 
+				FF FF FF FF 29 28 
+				24 22 20 1F 1E 0A 
+				08 06 05 04 02 00 
+				FF FF FF 64 31 00 
+				00 00 88 70 12 00 
+				00 00 00 0F 00 7D 
+				0F 00 02 22 55 A3 
+				04 00 00 00 64 A0 
+				00 00 00 00 00 00 
+				00 00 00 00 32 00 
+				06 00 02 05 78 00 
+				00 2A 0F 00 00 00 
+				00 00 00 00 00 00 
+				00 00 00 00 00 00 
+				00 00 00 00 CE 01 				 
+				];
+			goodix,cfg-group2 = [
+				42 80 07 38 04 0A 39 49 01 0F 
+				1E 0F 50 32 03 00 00 00 00 00 
+				00 00 04 18 18 20 14 87 27 DD 
+				66 64 EB 06 BB 0A 08 1A 33 11 
+				00 00 00 00 00 00 00 32 FA A0 
+				43 46 78 85 80 C5 01 1E 00 04 
+				9D 49 00 91 52 00 87 5B 00 7E 
+				66 00 77 71 00 77 20 40 60 00 
+				F0 50 50 FF FF 17 00 91 02 00 
+				00 00 00 00 FF E7 00 33 00 28 
+				80 00 00 00 00 14 00 00 00 00 
+				00 28 00 01 02 03 04 05 06 07 
+				08 09 0A 0B 0C 19 18 17 16 15 
+				14 13 12 11 10 0F 0E 0D FF FF 
+				FF FF 29 28 24 22 20 1F 1E 0A 
+				08 06 05 04 02 00 FF FF FF 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 02 22 22 20 
+				02 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 7A 01]; 
+		};
+	};
+};
+
+&usb_otg {
+	qcom,hsusb-otg-phy-init-seq = <0x39 0x81 0x37 0x82 0xffffffff>;
+};

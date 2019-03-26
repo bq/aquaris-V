@@ -22,3 +22,7 @@
 	qcom,board-id= <8 0>;
 	qcom,pmic-id = <0x10019 0x010011 0x0 0x0>;
 };
+
+&usb_otg {
+	qcom,usbin-vadc = <&pmi8950_vadc>;
+};

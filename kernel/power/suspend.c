@@ -536,6 +536,14 @@ static void pm_suspend_marker(char *annotation)
 		tm.tm_hour, tm.tm_min, tm.tm_sec, ts.tv_nsec);
 }
 
+static bool pm_suspend_enter = false;
+
+bool is_pm_suspend_enter(void)
+{
+	return pm_suspend_enter;
+}
+EXPORT_SYMBOL(is_pm_suspend_enter);
+
 /**
  * pm_suspend - Externally visible function for suspending the system.
  * @state: System sleep state to enter.
@@ -549,7 +557,7 @@ int pm_suspend(suspend_state_t state)
 
 	if (state <= PM_SUSPEND_ON || state >= PM_SUSPEND_MAX)
 		return -EINVAL;
-
+	pm_suspend_enter = true;
 	pm_suspend_marker("entry");
 	error = enter_state(state);
 	if (error) {
@@ -559,6 +567,7 @@ int pm_suspend(suspend_state_t state)
 		suspend_stats.success++;
 	}
 	pm_suspend_marker("exit");
+	pm_suspend_enter = false;
 	return error;
 }
 EXPORT_SYMBOL(pm_suspend);

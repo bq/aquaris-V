@@ -1061,6 +1061,19 @@ config TOUCHSCREEN_FT5X06
          To compile this driver as a module, choose M here: the
          module will be called ft5x06_ts.
 
+config TOUCHSCREEN_ILI2120
+       tristate "FocalTech touchscreens"
+       depends on I2C
+       help
+         Say Y here if you have a ili2120 touchscreen.
+	 ili2120 controllers are multi touch controllers which can
+	 report 5 touches at a time.
+
+         If unsure, say N.
+
+         To compile this driver as a module, choose M here: the
+         module will be called ili2120.
+
 config FT_SECURE_TOUCH
 	bool "Secure Touch support for Focaltech Touchscreen"
 	depends on TOUCHSCREEN_FT5X06
@@ -1122,7 +1135,22 @@ config TOUCHSCREEN_GT9XX
 	  report 5 touches at a time.
 
           If unsure, say N.
+config TOUCHSCREEN_GT9XX_RADITZ
+	bool "Goodix touchpanel GT9xx series"
+	depends on I2C
+	help
+	  Say Y here if you have a Goodix GT9xx touchscreen.
+	  Gt9xx controllers are multi touch controllers which can
+	  report 5 touches at a time.
 
+          If unsure, say N.
+          
+config TOUCHSCREEN_TP_VERSION
+	default n
+	bool "Touchpanel version"
+	help
+	  Say Y here if you have the touchpanel version
+	  
 config TOUCHSCREEN_MAXIM_STI
 	tristate "Maxim based STI touchscreens"
 	depends on SPI_MASTER
@@ -1136,17 +1164,9 @@ config TOUCHSCREEN_MAXIM_STI
 	  module will be called maxim_sti.
 
 source "drivers/input/touchscreen/gt9xx/Kconfig"
-
-config TOUCHSCREEN_HIMAX_CHIPSET
-	bool "Himax touchpanel CHIPSET"
-	depends on I2C
-	help
-	  Say Y here if you have a Himax CHIPSET touchscreen.
-	  HIMAX controllers are multi touch controllers which can
-	  report 10 touches at a time.
-
-          If unsure, say N.
-
+source "drivers/input/touchscreen/gt9xx_raditz/Kconfig"
+source “drivers/input/touchscreen/focaltech_touch/Kconfig”
 source "drivers/input/touchscreen/hxchipset/Kconfig"
+source "drivers/input/touchscreen/hxchipset_raditz/Kconfig"
 
 endif

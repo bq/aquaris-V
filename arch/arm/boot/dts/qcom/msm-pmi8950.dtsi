@@ -202,9 +202,9 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 
-			qcom,iterm-ma = <100>;
-			qcom,float-voltage-mv = <4200>;
-			qcom,resume-delta-mv = <200>;
+			qcom,iterm-ma = <150>;
+			qcom,float-voltage-mv = <4400>;
+			qcom,resume-delta-mv = <100>;
 			qcom,chg-inhibit-fg;
 			qcom,rparasitic-uohm = <100000>;
 			qcom,bms-psy-name = "bms";
@@ -317,16 +317,23 @@
 			compatible = "qcom,qpnp-fg";
 			#address-cells = <1>;
 			#size-cells = <1>;
-			qcom,resume-soc = <95>;
+			qcom,resume-soc = <99>;
 			status = "okay";
 			qcom,bcl-lm-threshold-ma = <127>;
 			qcom,bcl-mh-threshold-ma = <405>;
-			qcom,fg-iterm-ma = <150>;
-			qcom,fg-chg-iterm-ma = <100>;
+			qcom,fg-iterm-ma = <180>;
+			qcom,fg-chg-iterm-ma = <150>;
 			qcom,pmic-revid = <&pmi8950_revid>;
-			qcom,fg-cutoff-voltage-mv = <3500>;
+			qcom,fg-cutoff-voltage-mv = <3400>;
+                        qcom,fg-cc-cv-threshold-mv = <4390>;
 			qcom,cycle-counter-en;
+                        qcom,cycle-counter-low-soc = <15>;
+                        qcom,cycle-counter-high-soc = <85>;
 			qcom,capacity-learning-on;
+                        qcom,cl-max-temp-decidegc = <450>;
+                        qcom,cl-min-temp-decidegc = <150>;
+                        qcom,cl-max-start-soc = <5>;
+                        qcom,capacity-learning-feedback;
 
 			qcom,fg-soc@4000 {
 			status = "okay";
@@ -611,6 +618,20 @@
 					regulator-name = "pon_spare_reg";
 				};
 			};
+
+			pmi8950_switch1: qcom,switch_1 {
+				label = "switch";
+				qcom,led-name = "led:switch1";
+				qcom,default-led-trigger =
+						"switch1_trigger";
+				qcom,max-current = <1000>;
+				qcom,duration = <1280>;
+				qcom,id = <3>;
+				qcom,current = <625>;
+				reg0 {
+					regulator-name = "pon_spare_reg";
+				};
+			};
 		};
 
 		pmi_haptic: qcom,haptic@c000 {
@@ -620,16 +641,16 @@
 					<0x3 0xc0 0x1>;
 			interrupt-names = "sc-irq", "play-irq";
 			qcom,pmic-revid = <&pmi8950_revid>;
-			vcc_pon-supply = <&pon_perph_reg>;
-			qcom,play-mode = "direct";
+			//vcc_pon-supply = <&pon_perph_reg>;
+			qcom,play-mode = "buffer";
 			qcom,wave-play-rate-us = <5263>;
 			qcom,actuator-type = "erm";
 			qcom,wave-shape = "square";
 			qcom,vmax-mv = <2000>;
-			qcom,ilim-ma = <800>;
+			qcom,ilim-ma = <90>;
 			qcom,sc-deb-cycles = <8>;
 			qcom,int-pwm-freq-khz = <505>;
-			qcom,en-brake;
+			//qcom,en-brake;
 			qcom,brake-pattern = [03 03 00 00];
 			qcom,use-play-irq;
 			qcom,use-sc-irq;

@@ -1774,6 +1774,8 @@ static void qpnp_flash_led_work(struct work_struct *work)
 			}
 			led->fault_reg = val;
 		}
+	} else if (flash_node->type == SWITCH) {
+		pr_err("Skip request using a flash switch\n");
 	} else {
 		pr_err("Both Torch and Flash cannot be select at same time\n");
 		for (i = 0; i < led->num_leds; i++)

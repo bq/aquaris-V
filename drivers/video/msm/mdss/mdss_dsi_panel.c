@@ -32,8 +32,13 @@
 #define DEFAULT_MDP_TRANSFER_TIME 14000
 
 #define VSYNC_DELAY msecs_to_jiffies(17)
-
 DEFINE_LED_TRIGGER(bl_led_trigger);
+
+#if defined(CONFIG_MSM8953_PRODUCT)
+extern int ilitek_i2c_resume_test(void);
+extern void send_ilitek_TP_suspend_scnd_cmd(void);
+int tp_gesture_wakeup(void);
+#endif
 
 void mdss_dsi_panel_pwm_cfg(struct mdss_dsi_ctrl_pdata *ctrl)
 {
@@ -345,6 +350,13 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 	struct mdss_panel_info *pinfo = NULL;
 	int i, rc = 0;
 
+#if defined(CONFIG_MSM8953_PRODUCT)
+       if(enable == 1)
+       {
+            ilitek_i2c_resume_test();
+        }
+#endif
+
 	if (pdata == NULL) {
 		pr_err("%s: Invalid input data\n", __func__);
 		return -EINVAL;
@@ -404,7 +416,6 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 	}
 
 	pr_debug("%s: enable = %d\n", __func__, enable);
-
 	if (enable) {
 		rc = mdss_dsi_request_gpios(ctrl_pdata);
 		if (rc) {
@@ -480,8 +491,9 @@ int mdss_dsi_panel_reset(struct mdss_panel_data *pdata, int enable)
 			gpio_set_value((ctrl_pdata->disp_en_gpio), 0);
 			gpio_free(ctrl_pdata->disp_en_gpio);
 		}
-		gpio_set_value((ctrl_pdata->rst_gpio), 0);
+		gpio_set_value((ctrl_pdata->rst_gpio), 1);
 		gpio_free(ctrl_pdata->rst_gpio);
+
 		if (gpio_is_valid(ctrl_pdata->mode_gpio))
 			gpio_free(ctrl_pdata->mode_gpio);
 	}
@@ -861,6 +873,13 @@ static int mdss_dsi_panel_on(struct mdss_panel_data *pdata)
 		return -EINVAL;
 	}
 
+#if defined(CONFIG_MSM8953_PRODUCT)
+	if(tp_gesture_wakeup() == 1)
+	{
+		send_ilitek_TP_suspend_scnd_cmd();	
+	}
+#endif
+
 	pinfo = &pdata->panel_info;
 	ctrl = container_of(pdata, struct mdss_dsi_ctrl_pdata,
 				panel_data);
@@ -987,7 +1006,7 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 		if (ctrl->ndx != DSI_CTRL_LEFT)
 			goto end;
 	}
-
+	
 	if (ctrl->off_cmds.cmd_cnt)
 		mdss_dsi_panel_cmds_send(ctrl, &ctrl->off_cmds, CMD_REQ_COMMIT);
 
@@ -2224,8 +2243,15 @@ int mdss_panel_parse_bl_settings(struct device_node *np,
 	int rc = 0;
 	u32 tmp;
 
+#ifdef CONFIG_MSM8953_PRODUCT
+#define IS_BARDOCK_BEFORE_DVT2() ((gpio_get_value(127) == 0) && (gpio_get_value(128) == 1))
 	ctrl_pdata->bklt_ctrl = UNKNOWN_CTRL;
-	data = of_get_property(np, "qcom,mdss-dsi-bl-pmic-control-type", NULL);
+	if(!IS_BARDOCK_BEFORE_DVT2())
+		data = of_get_property(np, "qcom,mdss-dsi-bl-pmic-control-type-dcs", NULL);
+	else
+#endif
+		data = of_get_property(np, "qcom,mdss-dsi-bl-pmic-control-type", NULL);
+		
 	if (data) {
 		if (!strcmp(data, "bl_ctrl_wled")) {
 			led_trigger_register_simple("bkl-trigger",

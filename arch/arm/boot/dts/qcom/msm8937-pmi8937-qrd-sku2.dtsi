@@ -12,7 +12,7 @@
  */
 
 #include "msm-pmi8937.dtsi"
-#include "msm8937-qrd.dtsi"
+//#include "msm8937-qrd.dtsi"
 #include "msm8937-mdss-panels.dtsi"
 
 &spmi_bus {

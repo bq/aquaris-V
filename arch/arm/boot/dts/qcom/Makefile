@@ -184,7 +184,6 @@ dtb-$(CONFIG_ARCH_MSM8937) += msm8937-rumi.dtb \
 	msm8937-pmi8950-rcm.dtb \
 	msm8937-pmi8937-rcm.dtb \
 	msm8937-pmi8940-rcm.dtb \
-	msm8937-pmi8950-qrd-sku1.dtb \
 	msm8937-pmi8937-qrd-sku2.dtb \
 	msm8937-pmi8950-qrd-sku1-dvt1.dtb \
 	msm8937-pmi8937-qrd-sku2-dvt1.dtb \
@@ -224,6 +223,16 @@ dtb-$(CONFIG_ARCH_MSM8920) += msm8920-pmi8937-cdp.dtb \
 	msm8920-pmi8940-qrd-sku7.dtb \
 	msm8920-pmi8950-ext-codec-cdp.dtb
 
+dtb-$(CONFIG_PRODUCT_NAPPA) += nappa.dtb
+
+dtb-$(CONFIG_PRODUCT_YAMCHA) += yamcha.dtb
+
+dtb-$(CONFIG_PRODUCT_RADITZ) += raditz.dtb
+
+dtb-$(CONFIG_PRODUCT_RADITZ_S) += raditz_s.dtb
+
+dtb-$(CONFIG_PRODUCT_NAPPA_S) += nappa_s.dtb
+
 dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8937-cdp.dtb \
 	msm8940-pmi8937-mtp.dtb \
 	msm8940-pmi8950-cdp.dtb \
@@ -231,7 +240,6 @@ dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8937-cdp.dtb \
 	msm8940-pmi8937-rcm.dtb \
 	msm8940-pmi8950-rcm.dtb \
 	msm8940-pmi8950-qrd-sku6.dtb \
-	msm8940-pmi8950-qrd-sku7.dtb \
 	msm8940-pmi8950-ext-codec-cdp.dtb \
 	msm8940-pmi8940-mtp.dtb \
 	msm8940-pmi8940-cdp.dtb \

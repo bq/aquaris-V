@@ -21,7 +21,6 @@
 			status = "okay";
 			qcom,led_mpp_2 {
 				label = "mpp";
-				linux,name = "green";
 				linux,default-trigger = "none";
 				qcom,default-state = "off";
 				qcom,max-current = <40>;
@@ -36,7 +35,7 @@
 };
 
 &soc {
-	led_flash0: qcom,camera-flash {
+	led_flash0: qcom,camera-flash@0 {
 		cell-index = <0>;
 		compatible = "qcom,camera-flash";
 		qcom,flash-type = <1>;
@@ -44,12 +43,75 @@
 		qcom,torch-source = <&pmi8950_torch0>;
 		qcom,switch-source = <&pmi8950_switch>;
 	};
+	led_flash1: qcom,camera-flash@1 {
+		cell-index = <1>;
+		compatible = "qcom,camera-flash";
+		qcom,flash-type = <1>;
+		qcom,flash-source = <&pmi8950_flash1>;
+		qcom,torch-source = <&pmi8950_torch1>;
+		qcom,switch-source = <&pmi8950_switch1>;
+	};
+        goodix_fp{
+	    compatible = "goodix,fingerprint";
+	    interrupt-parent = <&tlmm>;
+	    interrupt = <46 0x0>;
+	    vcc_spi_supply = <&pm8937_l6>;
+	    vcc_ana_supply = <&pm8937_l6>;
+	    vdd_io-supply = <&pm8937_l6>;
+	    goodix,gpio_reset = <&tlmm 66 0>;
+	    goodix,gpio_irq = <&tlmm 46 0>;
+	    goodix,gpio_ldo = <&tlmm 98 0>;
+         };
 
+	SUNWAVE_sw9651 {
+        compatible = "qcom,fingerprint";
+        /*spi-max-frequency = <4800000>;
+		reg = <0>;
+		input-device-name = "sw9651";
+		interrupt-parent = <&msm_gpio>;
+		spi-qup-id = <11>;*/
+		interrupt-parent = <&tlmm>;
+		interrupts = <46 0x0>;
+
+		vcc_spi-supply  = <&pm8937_l6>;
+		vdd_ana-supply  = <&pm8937_l6>;
+		vdd_io-supply   = <&pm8937_l6>;
+
+		qcom,reset-gpio = <&tlmm 66 0>;
+		qcom,irq-gpio = <&tlmm 46 0>;
+        qcom,pwr-gpio = <&tlmm 98 0>;
+		};
+		
+              cs_cs_spi@0 { // slave driver and CS ID
+	 		compatible = "qcom,cs_finger";
+                        spi-max-frequency = <16000000>;	
+			reg = <0>;
+                        interrupt-parent = <&tlmm>;
+			interrupts = <46 0x0>;
+                       
+                        cs,gpio-reset = <&tlmm 66 0>;
+			cs,gpio-irq = <&tlmm 46 0>;
+        		cs,gpio-pwr = <&tlmm 98 0>;
+                        vcc_spi-supply  = <&pm8937_l6>;
+			vdd_ana-supply  = <&pm8937_l6>;
+			vdd_io-supply   = <&pm8937_l6>;
+                        // cs,vddtx_mv = <1800>;
+                        cs,txout_boost_enable;
+			pinctrl-names = "active","suspend","irq_active";
+			pinctrl-0 = <&fp_shutdown_active>;
+			pinctrl-1 = <&fp_shutdown_suspend>;
+			pinctrl-2 = <&fp_irq_active>;
+			//clock-names = "iface_clk", "core_clk";
+			//clocks = <&clock_gcc clk_gcc_blsp2_ahb_clk>,
+			//<&clock_gcc clk_gcc_blsp2_qup4_spi_apps_clk>;		    
+	}; 	
+	
+	
 	i2c@78b7000 {
 		status = "ok";
-		synaptics@4b {
-			compatible = "synaptics,dsx";
-			reg = <0x4b>;
+		himax-ts@48 {
+			compatible = "himax,hxcommon";
+			reg = <0x48>;
 			interrupt-parent = <&tlmm>;
 			interrupts = <65 0x2008>;
 			vdd-supply = <&pm8937_l5>;
@@ -59,18 +121,84 @@
 			pinctrl-0 = <&ts_int_active &ts_reset_active>;
 			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 			pinctrl-2 = <&ts_release>;
-			synaptics,display-coords = <0 0 1079 1919>;
-			synaptics,panel-coords = <0 0 1079 1919>;
-			synaptics,reset-gpio = <&tlmm 64 0x00>;
-			synaptics,irq-gpio = <&tlmm 65 0x2008>;
-			synaptics,disable-gpios;
-			synaptics,button-map = <158 139 172>;
-			synaptics,resume-in-workqueue;
-			/* Underlying clocks used by secure touch */
-			clock-names = "iface_clk", "core_clk";
-			clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
-				<&clock_gcc clk_gcc_blsp1_qup3_i2c_apps_clk>;
+			himax,panel-coords   	= <0 720 0 1280>;
+			himax,display-coords 	= <0 720 0 1280>;
+			himax,irq-gpio       	= <&tlmm 65 0x00>;
+			himax,rst-gpio       	= <&tlmm 64 0x00>;
+			himax,3v3-gpio      	= <&tlmm 9 0x00>;
+			report_type             = <1>;
 		};
+		goodix_ts@5d {
+			compatible = "goodix,gt9xx";
+			reg = <0x5d>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <65 0x2008>;
+			vdd_ana-supply = <&pm8937_l5>;
+			vcc_i2c-supply = <&pm8937_l10>;
+			goodix,rst-gpio = <&tlmm 64 0x00>;
+			goodix,irq-gpio = <&tlmm 65 0x00>;
+			goodix,3v3-gpio = <&tlmm 9 0x00>;
+			goodix,cfg-group0 = [
+				46 D0 02 00 05 0A 0D 49 02 0F
+				2D 0F 50 32 03 00 00 00 00 00
+				00 00 04 18 18 20 14 87 27 CD
+				40 3E 09 06 BB 0A 01 1B 33 11
+				05 32 0A 03 32 00 40 32 FA A0
+				43 28 5A 85 C0 C5 01 1E 00 04
+				B0 2B 00 97 33 00 83 3C 00 73
+				46 00 64 53 00 64 18 38 60 00
+				F0 50 50 FF FF 17 00 91 09 03
+				61 6B 03 50 FF 67 00 33 00 28
+				00 00 00 00 00 01 50 57 61 03
+				50 28 00 01 02 03 04 05 06 07
+				08 09 0A 0B 18 17 16 15 14 13
+				12 11 10 0F 0E 0D 0C FF FF FF
+				FF FF 29 28 24 22 20 1F 1E 0A
+				08 06 05 04 02 00 FF FF FF 00
+				00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 07 00 00 00 88 20
+				02 00 00 00 00 00 00 00 00 00
+				28 50 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 00 00 00 00
+				00 00 00 00 00 00 B6 01];
+			goodix,cfg-group2 = [
+				45 D0 02 00 05 0A 09 49 01 0F 
+				1E 0F 50 32 03 00 00 00 00 00 
+				00 00 04 18 18 20 14 87 27 CD 
+				69 67 97 05 BB 0A 00 1A 33 11 
+				05 32 0A 03 32 00 00 32 FA A0 
+				43 4B 7D 85 C0 C5 01 1E 00 04 
+				A0 4F 00 93 57 00 87 60 00 7C 
+				6B 00 72 76 00 72 18 38 60 00 
+				F0 50 50 FF FF 17 00 91 02 03 
+				61 6B 03 50 FF 67 00 33 00 28 
+				00 00 00 00 00 01 50 57 61 03 
+				50 28 00 01 02 03 04 05 06 07 
+				08 09 0A 0B 18 17 16 15 14 13 
+				12 11 10 0F 0E 0D 0C FF FF FF 
+				FF FF 29 28 24 22 20 1F 1E 0A 
+				08 06 05 04 02 00 FF FF FF 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 07 00 00 00 88 20 
+				02 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 00 00 00 00 
+				00 00 00 00 00 00 9E 01]; 
+		};
+	};
+};
+
+&i2c_3 { /* BLSP2 QUP1 */
+	awinic@45 { /* Breath Light-Driven */
+		compatible = "awinic,aw2013";
+		reg = <0x45>;
+		vdd-supply = <&pm8937_l10>;
+		vcc-supply = <&pm8937_l5>;
+		awinic,ledr-parameter_array = <1 1 1 1 3 0 0>; //12121
+		awinic,ledg-parameter_array = <1 2 1 2 3 0 0>;
+		awinic,ledb-parameter_array = <1 2 1 2 3 0 0>;
 	};
 };
 
@@ -86,7 +214,7 @@
 	lab-supply = <&lab_regulator>;
 	ibb-supply = <&ibb_regulator>;
 
-	qcom,dsi-pref-prim-pan = <&dsi_r69006_1080p_cmd>;
+	qcom,dsi-pref-prim-pan = <&dsi_truly_r63350_1080p_video>;
 	pinctrl-names = "mdss_default", "mdss_sleep";
 	pinctrl-0 = <&mdss_dsi_active &mdss_te_active>;
 	pinctrl-1 = <&mdss_dsi_suspend &mdss_te_suspend>;
@@ -97,6 +225,12 @@
 
 &mdss_dsi1 {
 	status = "disabled";
+};
+
+&pmi_haptic {
+	vcc_pon-supply = <&pon_perph_reg>;
+	qcom,vmax-mv = <3600>;
+	qcom,en-brake;
 };
 
 &labibb {
@@ -145,13 +279,13 @@
 			ibb_regulator: qcom,ibb@dc00 {
 				/delete-property/
 					qcom,qpnp-ibb-use-default-voltage;
-				qcom,qpnp-ibb-init-lcd-voltage = <5700000>;
+				qcom,qpnp-ibb-init-lcd-voltage = <5500000>;
 			};
 
 			lab_regulator: qcom,lab@de00 {
 				/delete-property/
 					qcom,qpnp-ibb-use-default-voltage;
-				qcom,qpnp-ibb-init-lcd-voltage = <5700000>;
+				qcom,qpnp-ibb-init-lcd-voltage = <5500000>;
 			};
 		};
 	};
@@ -168,8 +302,9 @@
 		drive-strength = <12>;
 	};
 };
-
+/*
 &flash_led {
 	/delete-node/ qcom,flash_1;
 	/delete-node/ qcom,torch_1;
 };
+*/

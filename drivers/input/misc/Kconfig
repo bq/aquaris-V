@@ -824,4 +824,32 @@ config DOUBLE_TAP
 	help
 	 If you say yes here, you get support Bosch double tap sensor function
 
+config FINGERPRINT_SUNWAVE_FINGER
+	tristate "SUNWAVE_FINGER fingerprint drvier support"
+	help
+	  Say Y here to enable SUNWAVE_FINGER fingerprint driver support!
+
+config FINGERPRINT_GOODIX_GF3208
+	tristate "Goodix GFX18M fingerprint drvier support"
+	help
+	  Say Y here to enable goodix fingerprint driver support!
+
+config FINGERPRINT_CS_FINGER
+	tristate "CS_FINGER fingerprint drvier support"
+	help
+	  Say Y here to enable CS_FINGER fingerprint driver support!
+
+config FINGERPRINT_CHIPSAILING_FINGER
+	tristate "CHIPSAILING fingerprint drvier support"
+	help
+	  Say Y here to enable CHIPSAILING fingerprint driver support!	  
+config FINGERPRINT_CDFINGER_FINGER
+	tristate "CDFINGER_FINGER fingerprint drvier support"
+	help
+	  Say Y here to enable CDFINGER_FINGER fingerprint driver support!
+
+config HALL
+	tristate "HALL Switch"
+	help
+	 If you say yes here, you get support for hall switch control device
 endif

@@ -19,8 +19,17 @@
 		cell-index = <0>;
 		compatible = "qcom,camera-flash";
 		qcom,flash-type = <1>;
-		qcom,flash-source = <&pmi8940_flash0 &pmi8940_flash1>;
-		qcom,torch-source = <&pmi8940_torch0 &pmi8940_torch1>;
+		qcom,flash-source = <&pmi8940_flash0>;
+		qcom,torch-source = <&pmi8940_torch0>;
 		qcom,switch-source = <&pmi8940_switch>;
 	};
+    led_flash1: qcom,camera-flash@1 {
+        cell-index = <1>;
+        compatible = "qcom,camera-flash";
+        qcom,flash-type = <1>;
+        qcom,flash-source = <&pmi8940_flash1>;
+        qcom,torch-source = <&pmi8940_torch1>;
+        qcom,switch-source = <&pmi8940_switch>;
+    };
+
 };

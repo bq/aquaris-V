@@ -54,14 +54,6 @@
 			compatible = "android,firmware";
 			fstab {
 				compatible = "android,fstab";
-				vendor {
-					compatible = "android,vendor";
-					dev = "/dev/block/platform/soc/7824900.sdhci/by-name/vendor";
-					type = "ext4";
-					mnt_flags = "ro,barrier=1,discard";
-					fsmgr_flags = "wait";
-					status = "ok";
-				};
 				 system {
 					compatible = "android,system";
 					dev = "/dev/block/platform/soc/7824900.sdhci/by-name/system";
@@ -83,7 +75,7 @@
 		other_ext_mem: other_ext_region@0 {
 			compatible = "removed-dma-pool";
 			no-map;
-			reg = <0x0 0x85b00000 0x0 0xd00000>;
+			reg = <0x0 0x84A00000 0x0 0x1E00000>;
 		};
 
 		modem_mem: modem_region@0 {
@@ -117,7 +109,6 @@
 			reusable;
 			alignment = <0 0x400000>;
 			size = <0 0x7000000>;
-			status = "disabled";
 		};
 
 		qseecom_mem: qseecom_region@0 {
@@ -560,16 +551,7 @@
 			<&dma_blsp1 7 32 0x20000020 0x20>;
 		dma-names = "tx", "rx";
 
-		pericom-type-c@1d {
-			compatible = "pericom,usb-type-c";
-			reg = <0x1d>;
-			vdd_io-supply = <&pm8917_l5>;
-			interrupt-parent = <&tlmm>;
-			interrupts = <97 2>;	/* TLMM 97, TRIGGER_FALLING */
-			pericom,enb-gpio = <&tlmm 131 0x1>;	/* active low */
-			pinctrl-names = "default";
-			pinctrl-0 = <&usbc_int_default>;
-		};
+
 	};
 
 	i2c_3: i2c@78b7000 { /* BLSP1 QUP3 */
@@ -830,6 +812,7 @@
 			 < 1497600 >;
 	};
 
+
 	usb_otg: usb@78db000 {
 		compatible = "qcom,hsusb-otg";
 		reg = <0x78db000 0x400>, <0x6c000 0x200>;
@@ -837,6 +820,8 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges;
+
+		qcom,hsusb-otg-phy-init-seq = <0x39 0x81 0x37 0x82 0xffffffff>;
 
 		interrupts = <0 134 0>,<0 140 0>;
 		interrupt-names = "core_irq", "async_irq";
@@ -881,8 +866,8 @@
 				"phy_reset_clk", "phy_por_clk", "phy_csr_clk",
 				"xo";
 		qcom,bus-clk-rate = <595200000 200000000 100000000>;
-		qcom,max-nominal-sysclk-rate = <133330000>;
-
+		qcom,max-nominal-sysclk-rate = <133330000>;	
+		
 		qcom,usbbam@78c4000 {
 			compatible = "qcom,usb-bam-msm";
 			reg = <0x78c4000 0x17000>;
@@ -1376,9 +1361,9 @@
 		qcom,ce-opp-freq = <100000000>;
 	};
 
-	qcom_seecom: qseecom@85b00000 {
+	qcom_seecom: qseecom@84A00000 {
 		compatible = "qcom,qseecom";
-		reg = <0x85b00000 0x800000>;
+		reg = <0x84A00000 0x1900000>;
 		reg-names = "secapp-region";
 		qcom,hlos-num-ce-hw-instances = <1>;
 		qcom,hlos-ce-hw-instance = <0>;

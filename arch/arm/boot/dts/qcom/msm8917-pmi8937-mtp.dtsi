@@ -12,7 +12,7 @@
  */
 
 #include "msm-pmi8937.dtsi"
-#include "msm8917-mtp.dtsi"
+//#include "msm8917-mtp.dtsi"
 #include "msm8917-audio-mtp.dtsi"
 
 &soc {

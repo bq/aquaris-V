@@ -24,6 +24,10 @@
 #include "dsi-panel-truly-720p-cmd.dtsi"
 #include "dsi-panel-lead-fl10802-fwvga-video.dtsi"
 #include "dsi-panel-icn9706-720-1440p-video.dtsi"
+#include "dsi-panel-r61350-720p-video.dtsi"
+#include "dsi-panel-shenchao-ili9881c-720p-video.dtsi"
+#include "dsi-panel-truly-r63350-1080p-video.dtsi"
+#include "dsi-panel-djn-nt35596-1080p-video.dtsi"
 
 &soc {
 	dsi_panel_pwr_supply: dsi_panel_pwr_supply {
@@ -50,3 +54,28 @@
 
 	};
 };
+
+&dsi_r61350_720p_vid {
+	qcom,mdss-dsi-panel-timings-phy-v2 = [23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 1e 07 08 05 03 04 a0];
+};
+
+&dsi_truly_r63350_1080p_video {
+	qcom,mdss-dsi-panel-timings-phy-v2 = [23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 1e 07 08 05 03 04 a0];
+};
+
+&dsi_djn_nt35596_1080p_video {
+	qcom,mdss-dsi-panel-timings-phy-v2 = [23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 18 07 08 05 03 04 a0
+		23 1e 07 08 05 03 04 a0];
+};
+

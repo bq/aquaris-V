@@ -2382,7 +2382,8 @@ static int mdss_dsi_wait4video_eng_busy(struct mdss_dsi_ctrl_pdata *ctrl)
 	if (ctrl->ctrl_state & CTRL_STATE_MDP_ACTIVE) {
 		mdss_dsi_wait4video_done(ctrl);
 		v_total = mdss_panel_get_vtotal(pinfo);
-		v_blank = pinfo->lcdc.v_back_porch + pinfo->lcdc.v_pulse_width;
+		v_blank = pinfo->lcdc.v_back_porch + pinfo->lcdc.v_front_porch +
+					pinfo->lcdc.v_pulse_width;
 		if (pinfo->dynamic_fps && pinfo->current_fps)
 			fps = pinfo->current_fps;
 		else

@@ -1,0 +1,49 @@
+
+qcom,2991536_longcheer_l9560vk_3000mah_averaged_masterslave_jun27th2017 {
+	/* #2991536_Longcheer_L9560vk_3000mAh_averaged_MasterSlave_Jun27th2017*/
+	qcom,max-voltage-uv = <4400000>;
+	qcom,nom-batt-capacity-mah = <3000>;
+	qcom,batt-id-kohm = <10>;
+	qcom,battery-beta = <3435>;
+	qcom,battery-type = "2991536_longcheer_l9560vk_3000mah_averaged_masterslave_jun27th2017";
+	qcom,chg-rslow-comp-c1 = <3867590>;
+	qcom,chg-rslow-comp-c2 = <5924329>;
+	qcom,chg-rs-to-rslow = <1249105>;
+	qcom,chg-rslow-comp-thr = <0xAC>;
+	qcom,checksum = <0x7A5F>;
+	qcom,gui-version = "PMI8950GUI - 2.0.0.16";
+	qcom,fg-profile-data = [
+		 F5 83 A2 7D 
+		 AD 81 2B 7C 
+		 54 83 E6 49 
+		 C2 80 12 8C 
+		 12 82 4E 9A 
+		 52 BD 38 CA 
+		 5C 0E 0D 88 
+		 7E 7E 3B 82 
+		 A1 7C 58 83 
+		 95 62 3E 80 
+		 75 8C 4C 82 
+		 D0 99 2E BD 
+		 44 CA 5A 0D 
+		 35 0C 23 5B 
+		 14 70 B2 FD 
+		 83 13 98 44 
+		 FE 22 00 00 
+		 C4 46 20 26 
+		 97 40 00 00 
+		 00 00 00 00 
+		 00 00 00 00 
+		 83 71 24 6B 
+		 5C 8D 21 59 
+		 28 7D 8D 72 
+		 DA 74 9A 73 
+		 F9 75 54 6A 
+		 95 65 EF A8 
+		 20 DD 5A 25 
+		 5D A0 71 0C 
+		 28 00 FF 36 
+		 F0 11 30 03 
+		 00 00 00 0C 
+	];
+};
